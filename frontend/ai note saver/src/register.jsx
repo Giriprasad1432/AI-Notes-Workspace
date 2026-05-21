@@ -1,12 +1,19 @@
-import { Eye, EyeOff } from 'lucide-react'
-import { useState } from 'react';
+import {useState} from "react";
+import {useNavigate} from "react-router-dom";
 import {Link} from "react-router-dom";
-const Login = () => {
-    const [showPassword, setShowPassword] = useState(false);
-    const [formData, setFormData] = useState({ email: "", password: "" });
-    const [errors, setErrors] = useState({ email: "", password: "" });
-    const [loading, setLoading] = useState(false);
-    const [loginError, setLoginError] = useState("");
+import { Eye, EyeOff } from "lucide-react";
+
+const Register=()=>{
+    const navigate = useNavigate();
+    const [formData,setFormData]=useState({
+        name:"",
+        email:"",
+        password:""
+    })
+    const [loading,setLoading]=useState(false);
+    const [errors,setErrors]=useState({name:"",email:"",password:""});
+    const [showPassword,setShowPassword]=useState(false);
+    const [registerError, setRegisterError] = useState("");
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
         if (errors[e.target.name]) {
@@ -14,7 +21,7 @@ const Login = () => {
         }
     }
     const postFormData = async () => {
-        const response = await fetch("http://localhost:5000/api/auth/login", {
+        const response = await fetch("http://localhost:5000/api/auth/register", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -30,6 +37,11 @@ const Login = () => {
         setLoading(true);
         let tempErrors = {}
         const passwordExp = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&()])[A-Za-z\d@$!%*?&()]{8,20}$/;
+        if(!formData.name){
+            tempErrors.name="Name shouldn't be Empty"
+            setLoading(false);
+            return;
+        }
         if (!formData.email) {
             tempErrors.email = "Email shouldn't be Empty"
             setLoading(false);
@@ -46,33 +58,50 @@ const Login = () => {
             return;
         }
         setErrors(tempErrors);
-        setLoginError("");
+        setRegisterError("");
         try {
             const data = await postFormData();
             console.log("data from backend: ", data);
             if (data.success) {
-                alert("Login successful");
+                alert("Registered successfully");
+                navigate("/")
             }
             else {
-                setLoginError(data.message);
+                setRegisterError(data.message);
             }
         } catch (error) {
             console.log(error);
-            setLoginError("Something went wrong. Please try again later.");
+            setRegisterError("Something went wrong. Please try again later.");
         } finally {
             setLoading(false);
         }
         tempErrors = {};
         setErrors({ email: "", password: "" });
     }
-    return (
+    
+    return(
         <div className="flex justify-center items-center min-h-screen w-full bg-slate-950 p-4">
             <form onSubmit={handleSubmit} className="w-full max-w-md border border-slate-800 bg-slate-900/40 backdrop-blur-xl rounded-2xl p-10 flex flex-col gap-6 shadow-2xl">
                 <div className="space-y-2 text-center mb-4">
-                    <h2 className="text-4xl font-bold text-white tracking-tight">Welcome Back</h2>
-                    <p className="text-slate-400 text-sm">Please enter your details to sign in</p>
+                    <h2 className="text-4xl font-bold text-white tracking-tight">Register yourself</h2>
+                    <p className="text-slate-400 text-sm">Please enter your details to sign up</p>
                 </div>
-                {loginError && <p className="text-center text-red-400 text-xs ml-1">{loginError}</p>}
+                {registerError && <p className="text-center text-red-400 text-xs ml-1">{registerError}</p>}
+
+                <div className="flex flex-col gap-2">
+                    <label htmlFor="name" className="text-sm font-medium text-slate-300 ml-1">
+                        Name
+                    </label>
+                    {errors.name && <p className="text-red-400 text-xs ml-1">{errors.name}</p>}
+                    <input onChange={handleChange}
+                        type="text"
+                        id="name"
+                        name="name"
+                        value={formData.name}
+                        placeholder="Enter your full name"
+                        className="w-full bg-slate-800/50 text-white border border-slate-700 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all placeholder:text-slate-500"
+                    />
+                </div>
 
                 <div className="flex flex-col gap-2">
                     <label htmlFor="email" className="text-sm font-medium text-slate-300 ml-1">
@@ -118,15 +147,15 @@ const Login = () => {
                     disabled={loading}
                     className=" cursor-pointer w-full mt-4 bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 px-6 rounded-xl shadow-lg shadow-blue-500/20 transition-all active:scale-[0.98]"
                 >
-                   {loading ? "Signing in..." : "Sign In"}
+                    {loading?"Creating account...":"Create account"}
                 </button>
 
                 <p className="text-center text-slate-500 text-sm mt-2">
-                    Don't have an account? <Link to="/register" className="text-blue-400 hover:underline cursor-pointer">Sign up</Link>
+                    Already have an account? <Link to="/" className="text-blue-400 hover:underline cursor-pointer">Sign in</Link>
                 </p>
             </form>
         </div>
     )
 }
 
-export default Login
+export default Register
