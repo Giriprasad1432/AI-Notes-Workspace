@@ -48,6 +48,7 @@ const Login = () => {
             setLoginError("");
             return;
         }
+        setLoginError("");
         setFormData({...formData,email:formData.email.toLowerCase()});
         try {
             const data = await postFormData();

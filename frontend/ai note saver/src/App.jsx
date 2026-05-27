@@ -12,7 +12,7 @@ function App() {
       <Navbar/>
       <Routes>
         <Route path="/login" element={<Login />}></Route>
-        <Route path="/" element={<Dashboard />}></Route>
+        <Route path="/dashboard" element={<Dashboard />}></Route>
         <Route path="/register" element={<Register />}></Route>
       </Routes>
     </BrowserRouter>
