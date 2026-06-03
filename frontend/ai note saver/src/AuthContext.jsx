@@ -3,7 +3,7 @@ import {createContext,useContext,useState} from "react"
 const AuthContext=createContext();
 
 export const AuthProvider=({children})=>{
-    const [isLogggedIn,setIsLoggedIn]=useState(()=>{
+    const [isLoggedIn,setIsLoggedIn]=useState(()=>{
         return localStorage.getItem('isLoggedIn')==='true';
     });
 
@@ -18,7 +18,7 @@ export const AuthProvider=({children})=>{
     }
     
     return(
-        <AuthContext.Provider value={{isLogggedIn,login,logout}}>
+        <AuthContext.Provider value={{isLoggedIn,login,logout}}>
             {children}
         </AuthContext.Provider>
     )

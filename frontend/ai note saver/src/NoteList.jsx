@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { motion, AnimatePresence, easeInOut } from "framer-motion"
+import { motion, AnimatePresence} from "framer-motion"
 
 const layoutTiming = {
     type: "spring",
@@ -30,7 +30,8 @@ const NoteList = ({ selectedNote, onSelectNote,refreshNotes }) => {
     const updateNote = async (note) => {
         const response = await fetch(`http://localhost:5000/api/update-note/${note._id}`, {
             method: "PUT",
-            headers: { "Content-Type": "application/json" },
+            credentials:"include",
+            headers: { "Content-Type": "application/json", },
             body: JSON.stringify(note),
         });
         return await response.json();
@@ -40,7 +41,8 @@ const NoteList = ({ selectedNote, onSelectNote,refreshNotes }) => {
         try {
             const response = await fetch("http://localhost:5000/api/get-notes", {
                 method: "GET",
-                headers: { "Content-Type": "application/json" }
+                credentials:"include",
+                headers: { "Content-Type": "application/json", }
             });
             const data = await response.json();
             if (data.success) setNotes(data.data.slice(0, 7).reverse());
@@ -85,8 +87,8 @@ const NoteList = ({ selectedNote, onSelectNote,refreshNotes }) => {
                                     whileHover={{ scale: 1.04 }}
                                     transition={{ type: "tween", duration: 0.14 }}
                                 >
-                                    <h1 className="font-bold text-xl text-white text-center">{truncateTitle(note.title, 30)}</h1>
-                                    <p className="text-slate-200 text-sm text-center">{truncateTitle(note.content, 100)}</p>
+                                    <h1 className="font-bold text-xl text-slate-100 text-center">{truncateTitle(note.title, 30)}</h1>
+                                    <p className="text-slate-300 text-xs p-2 text-center">{truncateTitle(note.content, 100)}</p>
                                 </motion.div>
                             </motion.div>
                         )}

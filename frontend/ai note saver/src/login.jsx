@@ -1,13 +1,17 @@
 import { Eye, EyeOff } from 'lucide-react'
 import { useState } from 'react';
-import { Link } from "react-router-dom";
-import Navbar from './Navbar';
+import { Link,useNavigate } from "react-router-dom";
+import Navbar from './NavBar';
+import { useAuth } from './AuthContext';
+
 const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState({ email: "", password: "" });
     const [errors, setErrors] = useState({ email: "", password: "" });
     const [loading, setLoading] = useState(false);
     const [loginError, setLoginError] = useState("");
+    const navigate=useNavigate();
+    const { login } = useAuth();
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
         if (errors[e.target.name]) {
@@ -17,6 +21,7 @@ const Login = () => {
     const postFormData = async () => {
         const response = await fetch("http://localhost:5000/api/auth/login", {
             method: "POST",
+            credentials:"include",
             headers: {
                 "Content-Type": "application/json",
             },
@@ -54,7 +59,10 @@ const Login = () => {
             const data = await postFormData();
             console.log("data from backend: ", data);
             if (data.success) {
-                alert("Login successful");
+                localStorage.setItem("authToken",data.token);
+                login();
+                console.log("Login successful");
+                navigate("/dashboard");
             }
             else {
                 setLoginError(data.message);
@@ -76,7 +84,7 @@ const Login = () => {
                 <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px] pointer-events-none"></div>
                 <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-violet-500/10 rounded-full blur-[120px] pointer-events-none"></div>
 
-                <form onSubmit={handleSubmit} className="relative z-10 w-full max-w-md border border-slate-800/80 bg-slate-900/30 backdrop-blur-2xl rounded-2xl p-10 flex flex-col gap-6 shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
+                <form onSubmit={handleSubmit} className=" mt-10 relative z-10 w-full max-w-md border border-slate-800/80 bg-slate-900/30 backdrop-blur-2xl rounded-2xl p-10 flex flex-col gap-6 shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
                     <div className="space-y-2 text-center mb-2">
                         <h2 className="text-4xl font-extrabold text-white tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">Welcome Back</h2>
                         <p className="text-slate-400 text-sm">Please enter your details to sign in</p>
@@ -126,7 +134,7 @@ const Login = () => {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="cursor-pointer w-full mt-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-indigo-600/20 hover:shadow-indigo-600/35 hover:scale-[1.01] active:scale-[0.98] transition-all duration-300"
+                        className="cursor-pointer w-full mt-4 bg-linear-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-indigo-600/20 hover:shadow-indigo-600/35 hover:scale-[1.01] active:scale-[0.98] transition-all duration-300"
                     >
                         {loading ? "Signing in..." : "Sign In"}
                     </button>

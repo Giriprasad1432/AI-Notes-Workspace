@@ -3,6 +3,7 @@ import {NoteModel} from "../models/Note.js";
 export const addNote=async(req,res)=>{
     try{
         const {title,content}=req.body;
+        const userId=req.user.id;
         console.log("addNote called:", {title, content});
         if(title||content){
             let newTitle=title;
@@ -11,7 +12,8 @@ export const addNote=async(req,res)=>{
             }
             const note=new NoteModel({
                 title:newTitle,
-                content
+                content,
+                userId
             })
             await note.save();
             console.log("Note saved successfully");
@@ -27,7 +29,8 @@ export const addNote=async(req,res)=>{
 
 export const getNotes=async(req,res)=>{
     try{
-        const Notes=await NoteModel.find({}).sort({updatedAt:-1})
+        const userId=req.user.id;
+        const Notes=await NoteModel.find({userId}).sort({updatedAt:-1})
         res.status(200).json({success:true,data:Notes})
     }catch(error){
         console.log(error);
@@ -39,10 +42,11 @@ export const updateNote=async(req,res)=>{
     try{
         const noteId=req.params.noteId;
         const {title,content}=req.body;
+        let newTitle=title;
         if(!title){
-                newTitle=content.substr(0,10)+"...."
+            newTitle=content.substr(0,10)+"...."
         }
-        const updateNote=await NoteModel.findByIdAndUpdate(noteId,{title:title,content:content},{new:true,runValidators:true})
+        const updateNote=await NoteModel.findByIdAndUpdate(noteId,{title:newTitle,content:content},{new:true,runValidators:true})
         if(updateNote){
             res.status(200).json({success:true,message:"Note updated successfully",data:updateNote})
         }

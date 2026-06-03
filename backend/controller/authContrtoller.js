@@ -1,5 +1,22 @@
 import bcrypt from "bcryptjs"
 import {RegisterModel,LoginModel} from "../models/authModel.js";
+import jwt from "jsonwebtoken";
+
+const createToken=(res,user)=>{
+    try{
+        const id=user.id;
+        const key=process.env.JWT_SECRET;
+        const token=jwt.sign({id},key,{expiresIn:"30m"})
+        res.cookie("token",token,{
+            httpOnly:true,
+            secure:process.env.NODE_ENV === "production",
+            sameSite:"strict",
+            maxAge:30*60*1000
+        })
+    }catch(error){
+        console.log(error);
+    }
+}
 
 export const authController = async (req, res) => {
     const { email, password } = req.body;
@@ -12,6 +29,7 @@ export const authController = async (req, res) => {
         return res.status(401).json({ success: false, message: "Invalid username or password!" });
     }
     if(isMatch){
+        createToken(res,user);
         res.status(200).json({ success: true, message: "Login successful" });
     }
 }
@@ -41,7 +59,7 @@ export const LogoutController=async(req,res)=>{
     try{
     res.cookie('token',"",{
         httpOnly:true,
-        secure:process.env.NODE_ENV !== "production",
+        secure:process.env.NODE_ENV === "production",
         sameSite:"strict"
     })
     res.status(200).json({succes:true,message:"Logged out successfully"})

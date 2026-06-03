@@ -1,20 +1,21 @@
 import jwt from "jsonwebtoken";
 
-const protect=(req,res,next)=>{
-    const token=req.cookies.token
-    if(!token){
-        return res.status(401).json({success:false,message:"Unauthorized Access"})
+export const protect = (req, res, next) => {
+    const token = req.cookies.token
+    if (!token) {
+        return res.status(401).json({ success: false, message: "Unauthorized Access" })
     }
-    try{
-        const decodedToken=jwt.verify(token,"GIRI_PRASAD_ALLU");
-        req.user=decodedToken;
+    try {
+        const key = process.env.JWT_SECRET;
+        const decodedToken = jwt.verify(token, key);
+        req.user = decodedToken;
         next();
-    }catch(error){
+    } catch (error) {
         console.log(error);
-        res.status(401).json({success:false,message:"Unauthorized Access"})
+        res.status(401).json({ success: false, message: "Unauthorized Access" })
     }
 }
 
-export default protect
+
 
 

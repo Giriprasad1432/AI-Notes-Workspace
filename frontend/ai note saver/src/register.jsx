@@ -82,11 +82,11 @@ const Register = () => {
 
     return (
         <>
-            <div className="relative flex justify-center items-center min-h-screen w-full bg-slate-950 p-4 pt-20 overflow-hidden">
+            <div className="relative flex justify-center items-center min-h-screen w-full bg-slate-950 px-4 pt-20 overflow-hidden">
                 <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px] pointer-events-none"></div>
                 <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-violet-500/10 rounded-full blur-[120px] pointer-events-none"></div>
 
-                <form onSubmit={handleSubmit} className="relative z-10 w-full max-w-md border border-slate-800/80 bg-slate-900/30 backdrop-blur-2xl rounded-2xl p-10 flex flex-col gap-6 shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
+                <form onSubmit={handleSubmit} className="relative z-10 w-full max-w-md border border-slate-800/80 bg-slate-900/30 backdrop-blur-2xl rounded-2xl px-10 py-6 flex flex-col gap-6 shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
                     <div className="space-y-2 text-center mb-2">
                         <h2 className="text-4xl font-extrabold text-white tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">Register</h2>
                         <p className="text-slate-400 text-sm">Please enter your details to sign up</p>
