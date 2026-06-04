@@ -59,7 +59,7 @@ const Note = ({ setRefreshNotes }) => {
         <motion.div
             layout
             transition={{ layout: { duration: 0.3, ease: "easeInOut" } }}
-            className="flex flex-col gap-2 items-center w-[70%] px-3 pt-2 text-white bg-[#212124]/70 border border-transparent focus-within:border-violet-500/50 focus-within:shadow-[0_0_15px_rgba(139,92,246,0.15)] rounded-2xl transition-[border-color,box-shadow] duration-300"
+            className="flex flex-col gap-2 items-center w-[70%] px-3 pt-2 text-slate-800 dark:text-white bg-white/90 dark:bg-[#212124]/70 border border-slate-200 dark:border-transparent focus-within:border-violet-500/50 focus-within:shadow-[0_0_15px_rgba(139,92,246,0.15)] rounded-2xl transition-[border-color,box-shadow,background-color] duration-300 shadow-sm dark:shadow-none"
             style={{ willChange: "height, transform" }}
         >
             <AnimatePresence>
@@ -74,7 +74,7 @@ const Note = ({ setRefreshNotes }) => {
                         ref={inputRef}
                         value={note.title}
                         onChange={handleChange}
-                        className="py-1 text-center text-3xl border-none outline-none focus:outline-none focus:ring-0 focus-visible:outline-none w-[90%] bg-transparent"
+                        className="py-1 text-center text-3xl border-none outline-none focus:outline-none focus:ring-0 focus-visible:outline-none w-[90%] bg-transparent text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-colors duration-300"
                         placeholder="Title"
                         type="text"
                     />
@@ -89,7 +89,7 @@ const Note = ({ setRefreshNotes }) => {
                 value={note.content}
                 onChange={handleChange}
                 rows={1}
-                className="scrollbar-thumb-violet-900/50 scrollbar-thin hover:scrollbar-thumb-violet-700/80 pl-3 pt-3 w-full leading-5 resize-none outline-none border-none focus:outline-none focus:ring-0 focus-visible:outline-none placeholder:text-slate-500 bg-transparent overflow-y-auto  max-h-[30vh]"
+                className="scrollbar-thumb-violet-200 dark:scrollbar-thumb-violet-900/50 scrollbar-thin hover:scrollbar-thumb-violet-300 dark:hover:scrollbar-thumb-violet-700/80 pl-3 pt-3 w-full leading-5 resize-none outline-none border-none focus:outline-none focus:ring-0 focus-visible:outline-none text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 bg-transparent overflow-y-auto max-h-[30vh] transition-colors duration-300"
                 placeholder="Write your Note"
             />
 
@@ -106,7 +106,7 @@ const Note = ({ setRefreshNotes }) => {
                             whileTap={{ scale: 0.95 }}
                             onMouseDown={(e) => e.preventDefault()}
                             onClick={saveNote}
-                            className="bg-violet-500 cursor-pointer text-white px-4 py-2 rounded-xl"
+                            className="bg-violet-600 hover:bg-violet-700 cursor-pointer text-white px-4 py-2 rounded-xl transition-colors duration-200 shadow-md shadow-violet-600/10"
                         >
                             Save
                         </motion.button>

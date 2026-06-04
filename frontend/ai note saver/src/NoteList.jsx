@@ -79,7 +79,7 @@ const NoteList = ({ selectedNote, onSelectNote,refreshNotes }) => {
                                     opacity: 1
                                 }}
                                 style={{ willChange: "transform" }}
-                                className="absolute inset-0 cursor-pointer border border-transparent hover:border-blue-700/70 hover:bg-blue-950/20 bg-[#212124]/70 rounded-md overflow-hidden"
+                                className="absolute inset-0 cursor-pointer border border-slate-200 dark:border-transparent hover:border-blue-500/70 dark:hover:border-blue-700/70 hover:bg-blue-50/50 dark:hover:bg-blue-950/20 bg-white/90 dark:bg-[#212124]/70 rounded-md overflow-hidden shadow-sm dark:shadow-none transition-colors duration-300"
                                 onClick={() => onSelectNote(note)}
                             >
                                 <motion.div
@@ -87,8 +87,8 @@ const NoteList = ({ selectedNote, onSelectNote,refreshNotes }) => {
                                     whileHover={{ scale: 1.04 }}
                                     transition={{ type: "tween", duration: 0.14 }}
                                 >
-                                    <h1 className="font-bold text-xl text-slate-100 text-center">{truncateTitle(note.title, 30)}</h1>
-                                    <p className="text-slate-300 text-xs p-2 text-center">{truncateTitle(note.content, 100)}</p>
+                                    <h1 className="font-bold text-xl text-slate-800 dark:text-slate-100 text-center transition-colors duration-300">{truncateTitle(note.title, 30)}</h1>
+                                    <p className="text-slate-600 dark:text-slate-300 text-xs p-2 text-center transition-colors duration-300">{truncateTitle(note.content, 100)}</p>
                                 </motion.div>
                             </motion.div>
                         )}
@@ -106,7 +106,7 @@ const NoteList = ({ selectedNote, onSelectNote,refreshNotes }) => {
                                 exit={{ opacity: 0 }}
                                 transition={{ duration: 0.2 }}
                                 onClick={() => handleUpdate(note)}
-                                className="fixed z-40 top-0 left-0 w-full h-full bg-black/40 backdrop-blur-xs"
+                                className="fixed z-40 top-0 left-0 w-full h-full bg-black/20 dark:bg-black/40 backdrop-blur-xs"
                             />
 
                             <motion.div
@@ -121,22 +121,22 @@ const NoteList = ({ selectedNote, onSelectNote,refreshNotes }) => {
                                     left: "50%",
                                     willChange: "transform"
                                 }}
-                                className="flex flex-col rounded-2xl w-[90%] max-w-[600px] h-[350px] z-50 border bg-[#212124] shadow-2xl border-[#222222] overflow-hidden scrollbar-thumb-violet-900/50 scrollbar-thin hover:scrollbar-thumb-violet-800/80"
+                                className="flex flex-col rounded-2xl w-[90%] max-w-[600px] h-[350px] z-50 border bg-white dark:bg-[#212124] shadow-2xl border-slate-200 dark:border-[#222222] overflow-hidden scrollbar-thumb-violet-200 dark:scrollbar-thumb-violet-900/50 scrollbar-thin hover:scrollbar-thumb-violet-300 dark:hover:scrollbar-thumb-violet-800/80 transition-colors duration-300"
                             >
                                 <input
                                     placeholder="Title"
                                     name="title"
                                     value={note.title}
                                     onChange={(e) => handleChange(note._id, e)}
-                                    className="outline-none text-center text-2xl py-4 text-slate-200 font-semibold bg-transparent"
+                                    className="outline-none text-center text-2xl py-4 text-slate-800 dark:text-slate-200 font-semibold bg-transparent placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-colors duration-300"
                                 />
-                                <div className="border-b border-violet-950/50"></div>
+                                <div className="border-b border-slate-100 dark:border-violet-950/50 transition-colors duration-300"></div>
                                 <textarea
                                     placeholder="Enter Content"
                                     name="content"
                                     value={note.content}
                                     onChange={(e) => handleChange(note._id, e)}
-                                    className="px-5 py-4 text-white outline-none w-full h-full resize-none bg-transparent"
+                                    className="px-5 py-4 text-slate-700 dark:text-white outline-none w-full h-full resize-none bg-transparent placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-colors duration-300"
                                 />
                                 <button
                                     onClick={(e) => { e.stopPropagation(); handleUpdate(note); }}

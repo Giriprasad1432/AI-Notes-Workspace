@@ -1,29 +1,30 @@
-import {createContext,useContext,useState} from "react"
+import { createContext, useContext, useState } from "react"
 
-const AuthContext=createContext();
+const AuthContext = createContext();
 
-export const AuthProvider=({children})=>{
-    const [isLoggedIn,setIsLoggedIn]=useState(()=>{
-        return localStorage.getItem('isLoggedIn')==='true';
+export const AuthProvider = ({ children }) => {
+    const [isLoggedIn, setIsLoggedIn] = useState(() => {
+        return localStorage.getItem('isLoggedIn') === 'true';
     });
 
-    const login=()=>{
+    const login = (callback) => {
         setIsLoggedIn(true);
-        localStorage.setItem('isLoggedIn','true');
+        localStorage.setItem('isLoggedIn', 'true');
+        if (callback) callback();
     }
 
-    const logout=()=>{
+    const logout = () => {
         setIsLoggedIn(false);
-        localStorage.setItem('isLoggedIn','false');
+        localStorage.setItem('isLoggedIn', 'false');
     }
     
-    return(
-        <AuthContext.Provider value={{isLoggedIn,login,logout}}>
+    return (
+        <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
             {children}
         </AuthContext.Provider>
     )
 }
 
-export const useAuth=()=>{
+export const useAuth = () => {
     return useContext(AuthContext);
 }
