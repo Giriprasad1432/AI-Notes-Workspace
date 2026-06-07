@@ -84,7 +84,7 @@ const Register = () => {
 
     return (
         <>
-            <div className="relative flex flex-col pt-30 justify-center items-center  max-h-screen w-full bg-slate-50 dark:bg-slate-950 overflow-hidden transition-colors duration-300 px-4">
+            <div className="relative flex flex-col pt-20 justify-center items-center h-screen w-full bg-slate-50 dark:bg-slate-950 overflow-hidden transition-colors duration-300 px-4">
                 <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-blue-500/5 dark:bg-blue-500/10 rounded-full blur-[120px] pointer-events-none"></div>
                 <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-violet-500/5 dark:bg-violet-500/10 rounded-full blur-[120px] pointer-events-none"></div>
 
