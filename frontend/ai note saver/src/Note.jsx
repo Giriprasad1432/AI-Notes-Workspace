@@ -6,29 +6,62 @@ const Note = ({ setRefreshNotes }) => {
     const [isFocus, setFocus] = useState(false);
     const textareaRef = useRef(null);
     const inputRef = useRef(null);
+    const suggestionRef = useRef(null);
     const [suggestionText, setSuggestionText] = useState("");
     const [isAiActive, setIsAiActive] = useState(false);
     const [seconds, setSeconds] = useState(0);
 
+    const handleKeyDown = (e)=>{
+        if(!suggestionText.length==""){
+            if(e.key == 'Tab'){
+                e.preventDefault();
+                setNote({...note,content:note.content+suggestionText})
+                setSuggestionText("");
+            }
+        }
+    }
+
+    const handleAiSuggestion=async()=>{
+        try{
+            const response=await fetch("http://localhost:5000/api/suggestion",
+                {method:"POST",
+                credentials:"include",
+                headers:{"Content-Type":"application/json"},
+                body:JSON.stringify({note:note.content,title:note.title})})
+            const data=await response.json();
+            setSuggestionText(data.suggestion);
+            setIsAiActive(false);
+        }catch(error){
+            console.log(error);
+        }
+    }
+
     useEffect(() => {
         if (!isAiActive) return;
-
+        if (!isFocus|| note.content.length===0) {
+            setIsAiActive(false);
+            return;
+        }
         const interval = setInterval(() => {
             setSeconds((prevSeconds) => {
                 const nextSeconds = prevSeconds + 1;
-                if(nextSeconds===5){
-                    setIsAiActive(true);
+                if (nextSeconds === 4) {
+                    handleAiSuggestion();
                 }
-                console.log(seconds);
                 return nextSeconds;
             });
         }, 1000);
 
         return () => clearInterval(interval);
-    }, [note.content]);
+    }, [isAiActive, isFocus,seconds]);
 
     const handleChange = (e) => {
         setNote({ ...note, [e.target.name]: e.target.value });
+        if (note.content.split(" ").length>=4) {
+            setIsAiActive(true);
+            setSeconds(0);
+            setSuggestionText("");
+        }
     };
     const handleFocus = () => {
         setTimeout(() => {
@@ -95,33 +128,36 @@ const Note = ({ setRefreshNotes }) => {
                 )}
             </AnimatePresence>
 
-            <motion.textarea
+            <motion.div 
                 animate={{ height: isFocus ? "40vh" : "3rem" }}
                 transition={{ duration: 0.3, ease: "easeInOut" }}
-                ref={textareaRef}
-                onFocus={handleFocus}
-                onBlur={handleFocus}
-                name="content"
-                value={note.content}
-                onChange={handleChange}
-                className="scrollbar-thumb-violet-200 dark:scrollbar-thumb-violet-900/50 scrollbar-thin hover:scrollbar-thumb-violet-300 dark:hover:scrollbar-thumb-violet-700/80 pl-3 pt-3 w-full leading-5 resize-none outline-none border-none focus:outline-none focus:ring-0 focus-visible:outline-none text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 bg-transparent overflow-y-auto transition-colors duration-300"
-                placeholder="Write your Note"
-            />
-            {/* <div
-                onFocus={handleFocus}
-                onBlur={handleFocus}
-                contentEditable="true"
-                value={note.content}
-                onInput={(e) => {
-                    setNote({ ...note, content: e.target.textContent })
-                    setSuggestionText("")
-                }}
-                suppressContentEditableWarning
-                className="scrollbar-thumb-violet-200 dark:scrollbar-thumb-violet-900/50 scrollbar-thin hover:scrollbar-thumb-violet-300 dark:hover:scrollbar-thumb-violet-700/80 pl-3 pt-3 w-full leading-5 resize-none outline-none border-none focus:outline-none focus:ring-0 focus-visible:outline-none text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 bg-transparent overflow-y-auto transition-colors duration-300"
+                className="relative w-full flex flex-col"
             >
-                {note.content}
-                <span className="text-slate-400 dark:text-slate-500">{suggestionText}</span>
-            </div> */}
+                <textarea
+                    ref={textareaRef}
+                    onFocus={handleFocus}
+                    onBlur={handleFocus}
+                    name="content"
+                    value={note.content}
+                    onKeyDown={handleKeyDown}
+                    onChange={handleChange}
+                    onScroll={(e) => {
+                        if (suggestionRef.current) suggestionRef.current.scrollTop = e.target.scrollTop;
+                    }}
+                    className="h-full scrollbar-thumb-violet-200 dark:scrollbar-thumb-violet-900/50 scrollbar-thin hover:scrollbar-thumb-violet-300 dark:hover:scrollbar-thumb-violet-700/80 p-3 w-full leading-6 resize-none outline-none border-none focus:outline-none focus:ring-0 focus-visible:outline-none text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 bg-transparent overflow-y-auto transition-colors duration-300 relative z-10 font-sans text-base m-0"
+                    placeholder="Write your Note"
+                />
+                {isFocus && (
+                    <div
+                        ref={suggestionRef}
+                        className="absolute top-0 left-0 p-3 w-full h-full pointer-events-none whitespace-pre-wrap overflow-hidden z-0 font-sans text-base leading-6 m-0"
+                        aria-hidden="true"
+                    >
+                        <span className="text-transparent">{note.content}</span>
+                        <span className="text-slate-400 dark:text-slate-500">{suggestionText}</span>
+                    </div>
+                )}
+            </motion.div>
 
             <AnimatePresence>
                 {isFocus && (

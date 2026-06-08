@@ -1,61 +1,97 @@
-import {NoteModel} from "../models/Note.js";
+import { NoteModel } from "../models/Note.js";
+import { groq } from "@ai-sdk/groq"
+import { generateText } from 'ai'
 
-export const addNote=async(req,res)=>{
-    try{
-        const {title,content}=req.body;
-        const userId=req.user.id;
-        console.log("addNote called:", {title, content});
-        if(title||content){
-            let newTitle=title;
-            if(!title){
-                newTitle=content.substr(0,10)+"...."
+export const addNote = async (req, res) => {
+    try {
+        const { title, content } = req.body;
+        const userId = req.user.id;
+        console.log("addNote called:", { title, content });
+        if (title || content) {
+            let newTitle = title;
+            if (!title) {
+                newTitle = content.substr(0, 10) + "...."
             }
-            const note=new NoteModel({
-                title:newTitle,
+            const note = new NoteModel({
+                title: newTitle,
                 content,
                 userId
             })
             await note.save();
             console.log("Note saved successfully");
-            return res.status(200).json({success:true,message:"Note added successfully"})
-        }else{
-            return res.status(400).json({success:false,message:"Title or content is required"})
+            return res.status(200).json({ success: true, message: "Note added successfully" })
+        } else {
+            return res.status(400).json({ success: false, message: "Title or content is required" })
         }
-    }catch(error){
-        console.log("addNote error:",error);
-        res.status(500).json({success:false,message:"Internal server error"})
+    } catch (error) {
+        console.log("addNote error:", error);
+        res.status(500).json({ success: false, message: "Internal server error" })
     }
 }
 
-export const getNotes=async(req,res)=>{
-    try{
-        const userId=req.user.id;
-        const Notes=await NoteModel.find({userId}).sort({updatedAt:-1})
-        res.status(200).json({success:true,data:Notes})
-    }catch(error){
+export const getNotes = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const Notes = await NoteModel.find({ userId }).sort({ updatedAt: -1 })
+        res.status(200).json({ success: true, data: Notes })
+    } catch (error) {
         console.log(error);
-        res.status(500).json({success:false,message:"Internal Server Error"})
+        res.status(500).json({ success: false, message: "Internal Server Error" })
     }
 }
 
-export const updateNote=async(req,res)=>{
-    try{
-        const noteId=req.params.noteId;
-        const {title,content}=req.body;
-        let newTitle=title;
-        if(!title){
-            newTitle=content.substr(0,10)+"...."
+export const updateNote = async (req, res) => {
+    try {
+        const noteId = req.params.noteId;
+        const { title, content } = req.body;
+        let newTitle = title;
+        if (!title) {
+            newTitle = content.substr(0, 10) + "...."
         }
-        const updateNote=await NoteModel.findByIdAndUpdate(noteId,{title:newTitle,content:content},{new:true,runValidators:true})
-        if(updateNote){
-            res.status(200).json({success:true,message:"Note updated successfully",data:updateNote})
+        const updateNote = await NoteModel.findByIdAndUpdate(noteId, { title: newTitle, content: content }, { new: true, runValidators: true })
+        if (updateNote) {
+            res.status(200).json({ success: true, message: "Note updated successfully", data: updateNote })
         }
-        else{
-            res.status(404).json({success:false,message:"Note not found"})
+        else {
+            res.status(404).json({ success: false, message: "Note not found" })
         }
-    }catch(error){
+    } catch (error) {
         console.log(error);
-        res.status(500).json({success:false,message:"Internal Server Error"})
+        res.status(500).json({ success: false, message: "Internal Server Error" })
     }
 
+}
+
+export const generateSuggestion = async (req, res) => {
+    try {
+        const { text } = await generateText({
+            model: groq("llama-3.3-70b-versatile"),
+            prompt: `
+                You are a Note Completion Assistant.
+
+                Analyze the note carefully and suggest content that naturally continues or completes it.
+
+                Rules:
+                - Provide only the suggestion text.
+                - Do not explain your reasoning.
+                - Do not repeat the original note.
+                - Suggestions can be:
+                - A short phrase (up to 6 words), or
+                - 1–2 concise sentences.
+                - mostly try to give sentences.
+                - Keep the tone, context, and intent consistent with the note.
+                - If title is not empty, include it as context for better suggestions.
+                - Return only the most relevant completion.
+
+                Title:
+                ${req.body.title || ""}
+
+                Note:
+                ${req.body.note}`});
+        res.status(200).json({ success: true, suggestion: text });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: "Internal Server Error" })
+    }
 }
