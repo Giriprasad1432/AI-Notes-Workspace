@@ -13,10 +13,12 @@ const PORT=5000;
 
 app.use(express.json());
 app.use(cookieParser());
+app.set('trust proxy', 1);
 app.use(cors({
     origin:"https://ai-notes-workspace-flax.vercel.app",
     credentials:true
 }));
+
 connectDB();
 
 app.use("/api/auth",authRoutes);
