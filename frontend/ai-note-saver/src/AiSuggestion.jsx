@@ -1,6 +1,8 @@
+import { vite_api_url } from "./config";
+
 const handleAiSuggestion = async (title,content) => {
     try {
-        const response = await fetch("http://localhost:5000/api/suggestion",
+        const response = await fetch(`${vite_api_url}/api/suggestion`,
             {
                 method: "POST",
                 credentials: "include",

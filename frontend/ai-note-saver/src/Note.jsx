@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import handleAiSuggestion from "./AiSuggestion";
+import { vite_api_url } from "./config";
 const Note = ({ setRefreshNotes }) => {
     const [note, setNote] = useState({ title: "", content: "" });
     const [isFocus, setFocus] = useState(false);
@@ -73,7 +74,7 @@ const Note = ({ setRefreshNotes }) => {
             return;
         }
         try {
-            const response = await fetch("http://localhost:5000/api/add-note", {
+            const response = await fetch(`${vite_api_url}/api/add-note`, {
                 method: "POST",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },

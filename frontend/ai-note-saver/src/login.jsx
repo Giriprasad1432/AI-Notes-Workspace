@@ -3,6 +3,7 @@ import { useState,useEffect } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from './NavBar';
 import { useAuth } from './AuthContext';
+import { vite_api_url } from "./config";
 import {motion} from "framer-motion";
 
 const Login = () => {
@@ -53,7 +54,7 @@ const Login = () => {
         
         try {
             const currentData = { ...formData, email: formData.email.toLowerCase() };
-            const response = await fetch("http://localhost:5000/api/auth/login", {
+            const response = await fetch(`${vite_api_url}/api/auth/login`, {
                 method: "POST",
                 credentials: "include",
                 headers: {

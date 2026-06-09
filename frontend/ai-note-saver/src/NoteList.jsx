@@ -1,6 +1,7 @@
 import { useState, useEffect,useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import handleAiSuggestion from "./AiSuggestion";
+import { vite_api_url } from "./config";
 
 const layoutTiming = {
     type: "spring",
@@ -84,7 +85,7 @@ const NoteList = ({ selectedNote, onSelectNote, refreshNotes }) => {
     }
 
     const updateNote = async (note) => {
-        const response = await fetch(`http://localhost:5000/api/update-note/${note._id}`, {
+        const response = await fetch(`${vite_api_url}/api/update-note/${note._id}`, {
             method: "PUT",
             credentials: "include",
             headers: { "Content-Type": "application/json", },
@@ -95,7 +96,7 @@ const NoteList = ({ selectedNote, onSelectNote, refreshNotes }) => {
 
     const getNotes = async () => {
         try {
-            const response = await fetch("http://localhost:5000/api/get-notes", {
+            const response = await fetch(`${vite_api_url}/api/get-notes`, {
                 method: "GET",
                 credentials: "include",
                 headers: { "Content-Type": "application/json", }

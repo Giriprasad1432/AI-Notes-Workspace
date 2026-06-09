@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import {motion} from "framer-motion"
 import {useAuth} from "./AuthContext"
+import { vite_api_url } from "./config";
 
 const Register = () => {
     const navigate = useNavigate();
@@ -34,7 +35,7 @@ const Register = () => {
     }
 
     const postFormData = async () => {
-        const response = await fetch("http://localhost:5000/api/auth/register", {
+        const response = await fetch(`${vite_api_url}/api/auth/register`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
