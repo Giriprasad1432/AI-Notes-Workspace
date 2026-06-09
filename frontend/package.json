@@ -1,4 +1,10 @@
 {
+  "private": true,
+  "scripts": {
+    "dev": "cd \"ai note saver\" && npm run dev",
+    "build": "cd \"ai note saver\" && npm run build",
+    "start": "cd \"ai note saver\" && npm run preview"
+  },
   "dependencies": {
     "tailwindcss": "^4.3.0",
     "vite": "^8.0.13"
