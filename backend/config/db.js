@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const connectDB = async () => {
     try {
-        const mongoUri = process.env.MONGO_URI || "mongodb://localhost:27017/AI_NOTES_WORKSPACE";
+        const mongoUri = process.env.MONGODB_URI ;
         const conn = await mongoose.connect(mongoUri);
         console.log("mongo db connected: ", conn.connection.host);
     } catch (error) {

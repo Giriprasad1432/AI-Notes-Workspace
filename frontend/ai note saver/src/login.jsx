@@ -12,7 +12,7 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
     const [loginError, setLoginError] = useState("");
     const navigate = useNavigate();
-    const { login } = useAuth();
+    const { login, isLoggedIn } = useAuth();
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -22,10 +22,10 @@ const Login = () => {
     }
 
     useEffect(() => {
-        if (login) {
+        if (isLoggedIn) {
             navigate("/dashboard");
         }
-    }, [login, navigate]);
+    }, [isLoggedIn, navigate]);
     
     const handleSubmit = async (e) => {
         e.preventDefault();

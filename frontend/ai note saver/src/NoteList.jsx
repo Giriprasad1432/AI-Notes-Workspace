@@ -48,7 +48,7 @@ const NoteList = ({ selectedNote, onSelectNote, refreshNotes }) => {
         const interval = setInterval(() => {
             setSeconds((prevSeconds) => {
                 const nextSeconds = prevSeconds + 1;
-                if (nextSeconds === 4) {
+                if (nextSeconds === 3) {
                     handleAiSuggestion(selectedNote.title, selectedNote.content).then((data) => {
                         setSuggestionText(data?.suggestion || "");
                     });

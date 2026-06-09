@@ -35,7 +35,7 @@ const Note = ({ setRefreshNotes }) => {
         const interval = setInterval(() => {
             setSeconds((prevSeconds) => {
                 const nextSeconds = prevSeconds + 1;
-                if (nextSeconds === 4) {
+                if (nextSeconds === 3) {
                     handleAiSuggestion(note.title,note.content).then((data) => {
                         setSuggestionText(data?.suggestion || "");
                     });
@@ -152,6 +152,7 @@ const Note = ({ setRefreshNotes }) => {
                     >
                         <span className="text-transparent">{note.content}</span>
                         <span className="text-slate-400 dark:text-slate-500">{suggestionText}</span>
+                       {suggestionText?.length>0 && <span className="pl-2 inline-block whitespace-nowrap text-transparent md:text-slate-700 text-xs md:dark:text-slate-400">{"Press [Tab] to accept"}</span>}
                     </div>
                 )}
             </motion.div>

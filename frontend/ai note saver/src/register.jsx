@@ -16,19 +16,21 @@ const Register = () => {
     const [errors, setErrors] = useState({ name: "", email: "", password: "" });
     const [showPassword, setShowPassword] = useState(false);
     const [registerError, setRegisterError] = useState("");
-    const {login} = useAuth();
+    const {isLoggedIn} = useAuth();
     
     useEffect(() => {
-            if (login) {
-                navigate("/dashboard");
-            }
-    }, [login, navigate]);
+        if (isLoggedIn) {
+            navigate("/dashboard");
+        }
+    }, [isLoggedIn, navigate]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
         if (errors[e.target.name]) {
             setErrors({ ...errors, [e.target.name]: "" });
         }
+        if(registerError)
+            setRegisterError("");
     }
 
     const postFormData = async () => {
