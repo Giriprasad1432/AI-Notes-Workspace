@@ -1,4 +1,7 @@
+
 {
+  "name": "ai-notes-backend",
+  "version": "1.0.0",
   "type": "module",
   "dependencies": {
     "@ai-sdk/groq": "^3.0.39",
