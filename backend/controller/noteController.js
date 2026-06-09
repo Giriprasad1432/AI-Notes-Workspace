@@ -1,11 +1,13 @@
 import { NoteModel } from "../models/Note.js";
+import { RegisterModel } from "../models/authModel.js";
 import { groq } from "@ai-sdk/groq"
 import { generateText } from 'ai'
 
 export const addNote = async (req, res) => {
     try {
         const { title, content } = req.body;
-        const userId = req.user.id;
+        const user = await RegisterModel.findOne({userId:req.user.id});
+        const userId=user._id;
         console.log("addNote called:", { title, content });
         if (title || content) {
             let newTitle = title;
@@ -31,7 +33,8 @@ export const addNote = async (req, res) => {
 
 export const getNotes = async (req, res) => {
     try {
-        const userId = req.user.id;
+        const user = await RegisterModel.findOne({userId:req.user.id});
+        const userId=user._id;
         const Notes = await NoteModel.find({ userId }).sort({ updatedAt: -1 })
         res.status(200).json({ success: true, data: Notes })
     } catch (error) {
@@ -86,8 +89,8 @@ export const generateSuggestion = async (req, res) => {
                 Title:
                 ${req.body.title || ""}
 
-                Note:
-                ${req.body.note}`});
+                Content:
+                ${req.body.content}`});
         res.status(200).json({ success: true, suggestion: text });
 
     } catch (error) {

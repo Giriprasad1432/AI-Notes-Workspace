@@ -1,8 +1,9 @@
 import { Eye, EyeOff } from 'lucide-react'
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from './NavBar';
 import { useAuth } from './AuthContext';
+import {motion} from "framer-motion";
 
 const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -20,19 +21,12 @@ const Login = () => {
         }
     }
 
-    const postFormData = async () => {
-        const response = await fetch("http://localhost:5000/api/auth/login", {
-            method: "POST",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(formData)
-        });
-        const data = await response.json();
-        return data;
-    }
-
+    useEffect(() => {
+        if (login) {
+            navigate("/dashboard");
+        }
+    }, [login, navigate]);
+    
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -87,14 +81,18 @@ const Login = () => {
 
     return (
         <>
-            <div className="relative min-h-screen flex justify-center items-center w-full pt-20 bg-slate-50 dark:bg-slate-950 overflow-hidden transition-colors duration-300 px-4">
+            <div className="relative min-h-screen flex justify-center items-center w-full pt-20 pb-8 bg-slate-50 dark:bg-slate-950 overflow-hidden transition-colors duration-300 px-4">
                 
                 <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/5 dark:bg-blue-500/10 rounded-full blur-[120px] pointer-events-none"></div>
                 <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-violet-500/5 dark:bg-violet-500/10 rounded-full blur-[120px] pointer-events-none"></div>
 
-                <form onSubmit={handleSubmit} className="relative z-10 w-full max-w-md border border-slate-200/80 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/30 backdrop-blur-2xl rounded-2xl p-10 flex flex-col gap-6 shadow-[0_20px_50px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.6)] transition-all duration-300">
+                <motion.form 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ y:0,opacity: 1 }}
+                    transition={{ duration: 0.7 }}
+                    onSubmit={handleSubmit} className="relative z-10 w-full max-w-md border border-slate-200/80 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/30 backdrop-blur-2xl rounded-2xl p-6 sm:p-10 flex flex-col gap-6 shadow-[0_20px_50px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
                     <div className="space-y-2 text-center mb-2">
-                        <h2 className="text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight bg-gradient-to-r from-slate-900 via-slate-800 to-slate-600 dark:from-white dark:via-slate-200 dark:to-slate-400 bg-clip-text text-transparent">Welcome Back</h2>
+                        <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight bg-linear-to-r from-slate-900 via-slate-800 to-slate-600 dark:from-white dark:via-slate-200 dark:to-slate-400 bg-clip-text">Welcome Back</h2>
                         <p className="text-slate-500 dark:text-slate-400 text-sm">Please enter your details to sign in</p>
                     </div>
                     {loginError && <p className="text-center text-red-500 dark:text-red-400 text-xs ml-1 bg-red-500/10 border border-red-500/20 py-2 rounded-lg">{loginError}</p>}
@@ -150,7 +148,7 @@ const Login = () => {
                     <p className="text-center text-slate-500 dark:text-slate-400 text-sm mt-2">
                         Don't have an account? <Link to="/register" className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 font-medium transition-colors cursor-pointer hover:underline">Sign up</Link>
                     </p>
-                </form>
+                </motion.form>
             </div>
         </>
     )

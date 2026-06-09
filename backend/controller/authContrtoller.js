@@ -6,12 +6,12 @@ const createToken=(res,user)=>{
     try{
         const id=user.id;
         const key=process.env.JWT_SECRET;
-        const token=jwt.sign({id},key,{expiresIn:"30m"})
+        const token=jwt.sign({id},key,{expiresIn:"60m"})
         res.cookie("token",token,{
             httpOnly:true,
             secure:process.env.NODE_ENV === "production",
             sameSite:"strict",
-            maxAge:30*60*1000
+            maxAge:60*60*1000
         })
     }catch(error){
         console.log(error);

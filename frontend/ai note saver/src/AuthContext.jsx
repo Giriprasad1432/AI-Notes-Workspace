@@ -10,7 +10,7 @@ export const AuthProvider = ({ children }) => {
     const login = (callback) => {
         setIsLoggedIn(true);
         localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('sessionExpiry', Date.now() + 30 * 60 * 1000);
+        localStorage.setItem('sessionExpiry', Date.now() + 60 * 60 * 1000);
         if (callback) callback();
     }
 

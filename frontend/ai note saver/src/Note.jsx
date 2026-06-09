@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-
+import handleAiSuggestion from "./AiSuggestion";
 const Note = ({ setRefreshNotes }) => {
     const [note, setNote] = useState({ title: "", content: "" });
     const [isFocus, setFocus] = useState(false);
@@ -11,28 +11,18 @@ const Note = ({ setRefreshNotes }) => {
     const [isAiActive, setIsAiActive] = useState(false);
     const [seconds, setSeconds] = useState(0);
 
+    useEffect(()=>{
+        if(textareaRef.current){
+            textareaRef.current.scrollTop=textareaRef.current.scrollHeight;
+        }
+    },[isFocus]);
     const handleKeyDown = (e)=>{
-        if(!suggestionText.length==""){
+        if(suggestionText !== ""){
             if(e.key == 'Tab'){
                 e.preventDefault();
                 setNote({...note,content:note.content+suggestionText})
                 setSuggestionText("");
             }
-        }
-    }
-
-    const handleAiSuggestion=async()=>{
-        try{
-            const response=await fetch("http://localhost:5000/api/suggestion",
-                {method:"POST",
-                credentials:"include",
-                headers:{"Content-Type":"application/json"},
-                body:JSON.stringify({note:note.content,title:note.title})})
-            const data=await response.json();
-            setSuggestionText(data.suggestion);
-            setIsAiActive(false);
-        }catch(error){
-            console.log(error);
         }
     }
 
@@ -46,7 +36,10 @@ const Note = ({ setRefreshNotes }) => {
             setSeconds((prevSeconds) => {
                 const nextSeconds = prevSeconds + 1;
                 if (nextSeconds === 4) {
-                    handleAiSuggestion();
+                    handleAiSuggestion(note.title,note.content).then((data) => {
+                        setSuggestionText(data?.suggestion || "");
+                    });
+                    setIsAiActive(false);
                 }
                 return nextSeconds;
             });
@@ -101,8 +94,11 @@ const Note = ({ setRefreshNotes }) => {
     };
 
     return (
-        <div
-            className=" dark:border flex min-h-15 justify-center flex-col gap-2 items-center w-[70%] px-3 text-slate-800 dark:text-white bg-white/90 dark:bg-[#212124] border border-slate-200 dark:border-neutral-600 focus-within:border-violet-500/50 focus-within:shadow-[0_0_15px_rgba(139,92,246,0.15)] rounded-2xl transition-[border-color,box-shadow,background-color] duration-300 shadow-sm dark:shadow-none"
+        <motion.div
+            initial={{y:10,opacity:0}}
+            animate={{y:0,opacity:1}}
+            transition={{duration:0.5}}
+            className=" dark:border flex min-h-15 justify-center flex-col gap-2 items-center w-[95%] md:w-[70%] px-3 text-slate-800 dark:text-white bg-white/90 dark:bg-[#212124] border border-slate-200 dark:border-neutral-600 focus-within:border-violet-500/50 focus-within:shadow-[0_0_15px_rgba(139,92,246,0.15)] rounded-2xl transition-[border-color,box-shadow,background-color] duration-300 shadow-sm dark:shadow-none"
             style={{ willChange: "height, transform" }}
         >
             <AnimatePresence>
@@ -129,6 +125,7 @@ const Note = ({ setRefreshNotes }) => {
             </AnimatePresence>
 
             <motion.div 
+                initial={{ height: "3rem" }}
                 animate={{ height: isFocus ? "40vh" : "3rem" }}
                 transition={{ duration: 0.3, ease: "easeInOut" }}
                 className="relative w-full flex flex-col"
@@ -147,7 +144,7 @@ const Note = ({ setRefreshNotes }) => {
                     className="h-full scrollbar-thumb-violet-200 dark:scrollbar-thumb-violet-900/50 scrollbar-thin hover:scrollbar-thumb-violet-300 dark:hover:scrollbar-thumb-violet-700/80 p-3 w-full leading-6 resize-none outline-none border-none focus:outline-none focus:ring-0 focus-visible:outline-none text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 bg-transparent overflow-y-auto transition-colors duration-300 relative z-10 font-sans text-base m-0"
                     placeholder="Write your Note"
                 />
-                {isFocus && (
+                {isFocus && note.content.length>0 && (
                     <div
                         ref={suggestionRef}
                         className="absolute top-0 left-0 p-3 w-full h-full pointer-events-none whitespace-pre-wrap overflow-hidden z-0 font-sans text-base leading-6 m-0"
@@ -184,7 +181,7 @@ const Note = ({ setRefreshNotes }) => {
                 )}
             </AnimatePresence>
 
-        </div>
+        </motion.div>
     );
 };
 
