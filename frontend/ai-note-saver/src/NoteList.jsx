@@ -170,12 +170,11 @@ const NoteList = ({ selectedNote, onSelectNote, refreshNotes }) => {
                                 layoutId={`note-${note._id}`}
                                 transition={{ layout: layoutTiming }}
                                 onClick={(e) => e.stopPropagation()}
-                                initial={{ x: "-50%", y: "-50%" }}
-                                animate={{ x: "-50%", y: "-50%" }}
                                 style={{
                                     position: "fixed",
                                     top: "50%",
-                                    left: "50%",
+                                    left: "50%", 
+                                    translate: "-50% -50%",
                                     willChange: "transform"
                                 }}
                                 className="flex flex-col rounded-2xl w-[92%] max-w-[600px] h-[80vh] sm:h-[400px] z-50 border bg-white dark:bg-[#212124] shadow-2xl border-slate-200 dark:border-[#222222] overflow-hidden scrollbar-thumb-violet-200 dark:scrollbar-thumb-violet-900/50 scrollbar-thin hover:scrollbar-thumb-violet-300 dark:hover:scrollbar-thumb-violet-800/80 transition-colors duration-300"
