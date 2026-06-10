@@ -19,12 +19,17 @@ const Note = ({ setRefreshNotes }) => {
             textareaRef.current.scrollTop=textareaRef.current.scrollHeight;
         }
     },[isFocus]);
+
     const handleKeyDown = (e)=>{
         if(suggestionText !== ""){
-            if(e.key == 'Tab'){
+            if(!isMobile && e.key === 'Tab'){
                 e.preventDefault();
                 setNote({...note,content:note.content+suggestionText})
                 setSuggestionText("");
+            }
+            else if(isMobile && e.key === 'Enter'){
+                e.preventDefault();
+                acceptSuggestion();
             }
         }
     }
@@ -153,10 +158,9 @@ const Note = ({ setRefreshNotes }) => {
                 />
                 {isFocus && note.content.length>0 && (
                     <div
-                        onClick={isMobile ? acceptSuggestion : undefined}
                         ref={suggestionRef}
                         className=
-                        {`${isMobile ? "cursor-pointer pointer-events-auto" : "pointer-events-none"} absolute top-0 left-0 p-3 w-full h-full pointer-events-none whitespace-pre-wrap overflow-hidden z-0 font-sans text-base leading-6 m-0`}
+                        {`select-none absolute top-0 left-0 p-3 w-full h-full pointer-events-none whitespace-pre-wrap overflow-hidden z-0 font-sans text-base leading-6 m-0`}
                         aria-hidden="true"
                     >
                         <span className="text-transparent">{note.content}</span>

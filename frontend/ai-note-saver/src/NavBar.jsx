@@ -15,7 +15,7 @@ const Navbar = () => {
     const closeMenu = () => setMenuOpen(false);
     
     return (
-        <nav className="shadow-sm shadow-slate-900/10 dark:shadow-slate-900 fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-slate-950/30 backdrop-blur-md border-b border-slate-200 dark:border-slate-900/80 px-4 sm:px-8 py-3.5 transition-all duration-300">
+        <nav className={`shadow-sm shadow-slate-900/10 dark:shadow-slate-900 fixed top-0 left-0 right-0 z-[100] border-b border-slate-200 dark:border-slate-900/80 px-4 sm:px-8 py-3.5 transition-all duration-300 ${menuOpen ? 'bg-white dark:bg-slate-950' : 'bg-white/80 dark:bg-slate-950/30 backdrop-blur-md'}`}>
             <div className="flex items-center justify-between w-full">
                 {/* Logo */}
                 <Link to="/" className="text-xl sm:text-2xl font-extrabold bg-linear-to-r from-blue-500 to-violet-500 dark:from-blue-400 dark:to-violet-400 bg-clip-text text-transparent tracking-wider hover:opacity-90 transition-opacity">

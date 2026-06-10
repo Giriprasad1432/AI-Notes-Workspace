@@ -10,6 +10,12 @@ export const UIProvider = ({ children }) => {
     });
 
     useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth <= 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    useEffect(() => {
         localStorage.setItem('isLight', String(isLight));
         const root = document.documentElement;
         root.setAttribute("data-light", String(isLight));

@@ -1,4 +1,4 @@
-import { useState, useEffect,useRef } from "react"
+import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import handleAiSuggestion from "./AiSuggestion";
 import { vite_api_url } from "./config";
@@ -14,23 +14,24 @@ const layoutTiming = {
 
 const NoteList = ({ selectedNote, onSelectNote, refreshNotes }) => {
     const [notes, setNotes] = useState([]);
-    const suggestionRef1=useRef(null);
-    const updateRef=useRef(null);
+    const suggestionRef1 = useRef(null);
+    const updateRef = useRef(null);
+    const notelistRef = useRef(null);
     const [suggestionText, setSuggestionText] = useState("");
     const [isAiActive, setIsAiActive] = useState(false);
     const [seconds, setSeconds] = useState(0);
-    const {isMobile}=useUI();
-    
-    useEffect(()=>{
-        if(updateRef.current){
-            updateRef.current.scrollTop=updateRef.current.scrollHeight;
+    const { isMobile } = useUI();
+
+    useEffect(() => {
+        if (updateRef.current) {
+            updateRef.current.scrollTop = updateRef.current.scrollHeight;
         }
 
-    },[selectedNote,suggestionText])
-    
-    const handleKeyDown = (e)=>{
-        if(suggestionText !== ""){
-            if(e.key == 'Tab'){
+    }, [selectedNote, suggestionText])
+
+    const handleKeyDown = (e) => {
+        if (suggestionText !== "") {
+            if (!isMobile && e.key == 'Tab') {
                 e.preventDefault();
                 setNotes(prevNotes => prevNotes.map(note =>
                     note._id === selectedNote._id
@@ -39,14 +40,18 @@ const NoteList = ({ selectedNote, onSelectNote, refreshNotes }) => {
                 ));
                 setSuggestionText("");
             }
+            if (isMobile && e.key === 'Enter') {
+                e.preventDefault();
+                acceptSuggestion();
+            }
         }
     }
 
-    const acceptSuggestion=()=>{
+    const acceptSuggestion = () => {
         setNotes(prevNotes => prevNotes.map(note =>
-                    note._id === selectedNote._id
-                        ? { ...note, content: note.content + suggestionText }
-                        : note
+            note._id === selectedNote._id
+                ? { ...note, content: note.content + suggestionText }
+                : note
         ));
         setSuggestionText("");
     }
@@ -78,7 +83,7 @@ const NoteList = ({ selectedNote, onSelectNote, refreshNotes }) => {
         setNotes(prevNotes => prevNotes.map(prevNote =>
             prevNote._id === id ? { ...prevNote, [e.target.name]: e.target.value } : prevNote
         ));
-        if(e.target.name === "content" && e.target.value.split(" ").length >= 4){
+        if (e.target.name === "content" && e.target.value.split(" ").length >= 4) {
             setSuggestionText("");
             setIsAiActive(true);
             setSeconds(0);
@@ -119,50 +124,52 @@ const NoteList = ({ selectedNote, onSelectNote, refreshNotes }) => {
         }
     }
 
-    const truncateTitle = (title, maxLength = 15) => {
-        if (!title) return "";
-        return title.length <= maxLength ? title : title.substring(0, maxLength).trimEnd() + "...";
-    };
-
-    useEffect(() => { getNotes(); }, [refreshNotes]);
+    useEffect(() => {
+        getNotes();
+        if (notelistRef.current) {
+            notelistRef.current.scrollLeft = notelistRef.current.scrollWidth;
+        }
+    }, [refreshNotes]);
 
     return (
-        <div className="w-fit flex flex-row-reverse gap-2 px-2 bottom-3 md:bottom-10 right-2 sm:right-10 absolute z-5 select-none">
-            {notes.map((note) => {
-                const isSelected = selectedNote._id === note._id;
-                return (
-                    <div
-                        key={note._id}
-                        className="h-30 md:h-30 w-36 md:w-50 relative"
-                        style={{ contain: "layout size" }}
-                    >
-                        {!isSelected && (
-                            <motion.div
-                                layoutId={`note-${note._id}`}
-                                transition={{ duration: 1.5, layout: layoutTiming }}
-                                initial={{
-                                    opacity: 0
-                                }}
-                                animate={{
-                                    opacity: 1
-                                }}
-                                style={{ willChange: "transform" }}
-                                className="absolute inset-0 cursor-pointer border border-slate-200 dark:border-transparent hover:border-blue-500/70 dark:hover:border-blue-700/70 hover:bg-blue-50/50 dark:hover:bg-blue-950/20 bg-white/90 dark:bg-[#212124]/70 rounded-md overflow-hidden shadow-sm dark:shadow-none transition-colors duration-300"
-                                onClick={() => onSelectNote(note)}
-                            >
+        <>
+            <div ref={notelistRef} className="w-fit max-w-[calc(100vw-1rem)] overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] flex flex-row-reverse gap-2 px-2 pb-2 bottom-5 mt-3 md:bottom-10 right-2 sm:right-10 fixed z-[40] select-none">
+                {notes.map((note) => {
+                    const isSelected = selectedNote._id === note._id;
+                    return (
+                        <div
+                            key={note._id}
+                            className="h-30 md:h-30 w-36 md:w-50 relative shrink-0"
+                            style={{ contain: "layout size" }}
+                        >
+                            {!isSelected && (
                                 <motion.div
-                                    className="h-full w-full flex flex-col justify-center p-3 overflow-hidden"
-                                    whileHover={{ scale: 1.04 }}
-                                    transition={{ type: "tween", duration: 0.14 }}
+                                    layoutId={`note-${note._id}`}
+                                    transition={{ duration: 1.5, layout: layoutTiming }}
+                                    initial={{
+                                        opacity: 0
+                                    }}
+                                    animate={{
+                                        opacity: 1
+                                    }}
+                                    style={{ willChange: "transform" }}
+                                    className="absolute inset-0 cursor-pointer border border-slate-200 dark:border-transparent hover:border-blue-500/70 dark:hover:border-blue-700/70 hover:bg-blue-50/50 dark:hover:bg-blue-950/20 bg-white/90 dark:bg-[#212124]/70 rounded-md overflow-hidden shadow-sm dark:shadow-none transition-colors duration-300"
+                                    onClick={() => onSelectNote(note)}
                                 >
-                                    <h1 className="font-bold text-xl text-slate-800 dark:text-slate-100 text-center transition-colors duration-300">{truncateTitle(note.title, 30)}</h1>
-                                    <p className="max-h-15 overflow-hidden text-slate-600 dark:text-slate-300 text-xs p-2 text-center transition-colors duration-300">{truncateTitle(note.content, 70)}</p>
+                                    <motion.div
+                                        className="h-full w-full flex flex-col justify-center p-3 overflow-hidden"
+                                        whileHover={{ scale: 1.04 }}
+                                        transition={{ type: "tween", duration: 0.14 }}
+                                    >
+                                        <h1 className="font-bold text-xl text-slate-800 dark:text-slate-100 text-center transition-colors duration-300 truncate w-full px-1">{note.title}</h1>
+                                        <p className="line-clamp-3 text-slate-600 dark:text-slate-300 text-xs px-2 mt-1 text-center transition-colors duration-300 break-words">{note.content}</p>
+                                    </motion.div>
                                 </motion.div>
-                            </motion.div>
-                        )}
-                    </div>
-                );
-            })}
+                            )}
+                        </div>
+                    );
+                })}
+            </div>
 
             <AnimatePresence>
                 {notes.map((note) => (
@@ -174,7 +181,7 @@ const NoteList = ({ selectedNote, onSelectNote, refreshNotes }) => {
                                 exit={{ opacity: 0 }}
                                 transition={{ duration: 0.2 }}
                                 onClick={() => handleUpdate(note)}
-                                className="fixed z-40 top-0 left-0 w-full h-full bg-black/20 dark:bg-black/40 backdrop-blur-xs"
+                                className="fixed z-[60] top-0 left-0 w-full h-full bg-black/20 dark:bg-black/40 backdrop-blur-xs"
                             />
 
                             <motion.div
@@ -184,11 +191,11 @@ const NoteList = ({ selectedNote, onSelectNote, refreshNotes }) => {
                                 style={{
                                     position: "fixed",
                                     top: "50%",
-                                    left: "50%", 
+                                    left: "50%",
                                     translate: "-50% -50%",
                                     willChange: "transform"
                                 }}
-                                className="flex flex-col rounded-2xl w-[92%] max-w-[600px] h-[80vh] sm:h-[400px] z-50 border bg-white dark:bg-[#212124] shadow-2xl border-slate-200 dark:border-[#222222] overflow-hidden scrollbar-thumb-violet-200 dark:scrollbar-thumb-violet-900/50 scrollbar-thin hover:scrollbar-thumb-violet-300 dark:hover:scrollbar-thumb-violet-800/80 transition-colors duration-300"
+                                className="flex flex-col rounded-2xl w-[92%] max-w-[600px] h-[65vh] sm:h-[400px] z-[70] border bg-white dark:bg-[#212124] shadow-2xl border-slate-200 dark:border-[#222222] overflow-hidden scrollbar-thumb-violet-200 dark:scrollbar-thumb-violet-900/50 scrollbar-thin hover:scrollbar-thumb-violet-300 dark:hover:scrollbar-thumb-violet-800/80 transition-colors duration-300"
                             >
                                 <input
                                     placeholder="Title"
@@ -206,16 +213,15 @@ const NoteList = ({ selectedNote, onSelectNote, refreshNotes }) => {
                                         value={note.content}
                                         onKeyDown={handleKeyDown}
                                         onChange={(e) => handleChange(note._id, e)}
-                                        onScroll={(e)=>{if(suggestionRef1.current) suggestionRef1.current.scrollTop=e.target.scrollTop }}
+                                        onScroll={(e) => { if (suggestionRef1.current) suggestionRef1.current.scrollTop = e.target.scrollTop }}
                                         style={{ scrollbarGutter: "stable" }}
                                         className="px-5 py-4 font-sans text-base leading-6 text-slate-700 dark:text-white outline-none w-full h-full resize-none bg-transparent placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-colors duration-300"
                                     />
-                                    {(selectedNote)&& <div
+                                    {(selectedNote) && <div
                                         name="suggestion-text"
-                                        onClick={isMobile ? acceptSuggestion : undefined}
                                         ref={suggestionRef1}
                                         style={{ scrollbarGutter: "stable" }}
-                                        className={`${isMobile ? "cursor-pointer pointer-events-auto" : "pointer-events-none"} absolute top-0 left-0 px-5 py-4 w-full h-full pointer-events-none whitespace-pre-wrap overflow-hidden z-0 font-sans text-base leading-6 m-0`}
+                                        className={`absolute top-0 left-0 px-5 py-4 w-full h-full pointer-events-none whitespace-pre-wrap overflow-hidden z-0 font-sans text-base leading-6 m-0`}
                                         aria-hidden="true"
                                     >
                                         <span className="text-transparent">{note.content}</span>
@@ -224,19 +230,19 @@ const NoteList = ({ selectedNote, onSelectNote, refreshNotes }) => {
 
                                 </div>
                                 <div className="px-5 py-0 flex items-center justify-end h-15 w-full bg-white dark:bg-[#212124]">
-                                <button
-                                    onClick={(e) => { e.stopPropagation(); handleUpdate(note); }}
-                                    className="py-1 px-2  bg-violet-600 hover:bg-violet-700 font-semibold text-white rounded-lg transition-colors"
-                                >
-                                    Update
-                                </button>
+                                    <button
+                                        onClick={(e) => { e.stopPropagation(); handleUpdate(note); }}
+                                        className="py-1 px-2  bg-violet-600 hover:bg-violet-700 font-semibold text-white rounded-lg transition-colors"
+                                    >
+                                        Update
+                                    </button>
                                 </div>
                             </motion.div>
                         </div>
                     )
                 ))}
             </AnimatePresence>
-        </div>
+        </>
     )
 }
 
