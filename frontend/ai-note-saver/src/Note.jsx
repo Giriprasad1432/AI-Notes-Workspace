@@ -9,6 +9,7 @@ const Note = ({ setRefreshNotes }) => {
     const [isFocus, setFocus] = useState(false);
     const textareaRef = useRef(null);
     const inputRef = useRef(null);
+    const rootRef = useRef(null);
     const suggestionRef = useRef(null);
     const [suggestionText, setSuggestionText] = useState("");
     const [isAiActive, setIsAiActive] = useState(false);
@@ -19,6 +20,17 @@ const Note = ({ setRefreshNotes }) => {
             textareaRef.current.scrollTop=textareaRef.current.scrollHeight;
         }
     },[isFocus]);
+
+    useEffect(() => {
+        if (isFocus && isMobile && rootRef.current) {
+            setTimeout(() => {
+                try {
+                    rootRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+                } catch (e) {
+                }
+            }, 200);
+        }
+    }, [isFocus, isMobile]);
 
     const handleKeyDown = (e)=>{
         if(suggestionText !== ""){
@@ -107,11 +119,12 @@ const Note = ({ setRefreshNotes }) => {
 
     return (
         <motion.div
+            ref={rootRef}
             initial={{y:10,opacity:0}}
             animate={{y:0,opacity:1}}
             transition={{duration:0.5}}
             className=" dark:border flex min-h-15 justify-center flex-col gap-2 items-center w-[95%] md:w-[70%] px-3 text-slate-800 dark:text-white bg-white/90 dark:bg-[#212124] border border-slate-200 dark:border-neutral-600 focus-within:border-violet-500/50 focus-within:shadow-[0_0_15px_rgba(139,92,246,0.15)] rounded-2xl transition-[border-color,box-shadow,background-color] duration-300 shadow-sm dark:shadow-none"
-            style={{ willChange: "height, transform" }}
+            style={{ willChange: "height, transform", scrollMarginTop: '6rem' }}
         >
             <AnimatePresence>
                 {isFocus && (
@@ -154,6 +167,7 @@ const Note = ({ setRefreshNotes }) => {
                         if (suggestionRef.current) suggestionRef.current.scrollTop = e.target.scrollTop;
                     }}
                     className="h-full scrollbar-thumb-violet-200 dark:scrollbar-thumb-violet-900/50 scrollbar-thin hover:scrollbar-thumb-violet-300 dark:hover:scrollbar-thumb-violet-700/80 p-3 w-full leading-6 resize-none outline-none border-none focus:outline-none focus:ring-0 focus-visible:outline-none text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 bg-transparent overflow-y-auto transition-colors duration-300 relative z-10 font-sans text-base m-0"
+                    style={{ maxHeight: 'calc(100vh - 10rem)' }}
                     placeholder="Write your Note"
                 />
                 {isFocus && note.content.length>0 && (

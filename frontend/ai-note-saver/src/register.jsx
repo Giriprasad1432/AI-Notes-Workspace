@@ -96,7 +96,7 @@ const Register = () => {
 
     return (
         <>
-            <div className="relative flex flex-col pt-20 pb-8 justify-center items-center min-h-screen w-full bg-slate-50 dark:bg-slate-950 overflow-hidden transition-colors duration-300 px-4">
+            <div className="relative flex flex-col pt-24 pb-12 justify-center items-center min-h-screen w-full bg-slate-50 dark:bg-slate-950 overflow-y-auto overflow-x-hidden transition-colors duration-300 px-4">
                 <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-blue-500/5 dark:bg-blue-500/10 rounded-full blur-[120px] pointer-events-none"></div>
                 <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-violet-500/5 dark:bg-violet-500/10 rounded-full blur-[120px] pointer-events-none"></div>
 
