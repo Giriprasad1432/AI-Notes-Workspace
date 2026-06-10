@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.set('trust proxy', 1);
 app.use(cors({
-    origin:"https://ai-notes-workspace-flax.vercel.app",
+    origin:["https://ai-notes-workspace-flax.vercel.app","http://localhost:5173"],
     credentials:true
 }));
 

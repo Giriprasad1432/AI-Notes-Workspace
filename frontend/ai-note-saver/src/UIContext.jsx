@@ -3,6 +3,7 @@ import { createContext, useState, useContext,useEffect } from "react";
 const UIContext = createContext();
 
 export const UIProvider = ({ children }) => {
+    const [isMobile,setIsMobile] = useState(window.innerWidth<=768)
     const [isLight, setIsLight] = useState(() => {
         const savedTheme = localStorage.getItem('isLight');
         return savedTheme !== null ? savedTheme === 'true' : true;
@@ -15,7 +16,7 @@ export const UIProvider = ({ children }) => {
     }, [isLight]);
 
     return (
-        <UIContext.Provider value={{ isLight, setIsLight }}>
+        <UIContext.Provider value={{ isLight, setIsLight,isMobile }}>
             {children}
         </UIContext.Provider>
     );

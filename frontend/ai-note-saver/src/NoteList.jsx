@@ -2,6 +2,7 @@ import { useState, useEffect,useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import handleAiSuggestion from "./AiSuggestion";
 import { vite_api_url } from "./config";
+import { useUI } from "./UIContext";
 
 const layoutTiming = {
     type: "spring",
@@ -18,7 +19,8 @@ const NoteList = ({ selectedNote, onSelectNote, refreshNotes }) => {
     const [suggestionText, setSuggestionText] = useState("");
     const [isAiActive, setIsAiActive] = useState(false);
     const [seconds, setSeconds] = useState(0);
-
+    const {isMobile}=useUI();
+    
     useEffect(()=>{
         if(updateRef.current){
             updateRef.current.scrollTop=updateRef.current.scrollHeight;
@@ -38,6 +40,15 @@ const NoteList = ({ selectedNote, onSelectNote, refreshNotes }) => {
                 setSuggestionText("");
             }
         }
+    }
+
+    const acceptSuggestion=()=>{
+        setNotes(prevNotes => prevNotes.map(note =>
+                    note._id === selectedNote._id
+                        ? { ...note, content: note.content + suggestionText }
+                        : note
+        ));
+        setSuggestionText("");
     }
 
     useEffect(() => {
@@ -201,9 +212,10 @@ const NoteList = ({ selectedNote, onSelectNote, refreshNotes }) => {
                                     />
                                     {(selectedNote)&& <div
                                         name="suggestion-text"
+                                        onClick={isMobile ? acceptSuggestion : undefined}
                                         ref={suggestionRef1}
                                         style={{ scrollbarGutter: "stable" }}
-                                        className="absolute top-0 left-0 px-5 py-4 w-full h-full pointer-events-none whitespace-pre-wrap overflow-hidden z-0 font-sans text-base leading-6 m-0"
+                                        className={`${isMobile ? "cursor-pointer pointer-events-auto" : "pointer-events-none"} absolute top-0 left-0 px-5 py-4 w-full h-full pointer-events-none whitespace-pre-wrap overflow-hidden z-0 font-sans text-base leading-6 m-0`}
                                         aria-hidden="true"
                                     >
                                         <span className="text-transparent">{note.content}</span>

@@ -2,7 +2,9 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import handleAiSuggestion from "./AiSuggestion";
 import { vite_api_url } from "./config";
+import { useUI } from "./UIContext";
 const Note = ({ setRefreshNotes }) => {
+    const {isMobile}=useUI();
     const [note, setNote] = useState({ title: "", content: "" });
     const [isFocus, setFocus] = useState(false);
     const textareaRef = useRef(null);
@@ -49,6 +51,10 @@ const Note = ({ setRefreshNotes }) => {
         return () => clearInterval(interval);
     }, [isAiActive, isFocus,seconds]);
 
+    const acceptSuggestion=()=>{
+        setNote({ ...note, content: note.content + suggestionText });
+        setSuggestionText("");
+    }
     const handleChange = (e) => {
         setNote({ ...note, [e.target.name]: e.target.value });
         if (note.content.split(" ").length>=4) {
@@ -147,8 +153,10 @@ const Note = ({ setRefreshNotes }) => {
                 />
                 {isFocus && note.content.length>0 && (
                     <div
+                        onClick={isMobile ? acceptSuggestion : undefined}
                         ref={suggestionRef}
-                        className="absolute top-0 left-0 p-3 w-full h-full pointer-events-none whitespace-pre-wrap overflow-hidden z-0 font-sans text-base leading-6 m-0"
+                        className=
+                        {`${isMobile ? "cursor-pointer pointer-events-auto" : "pointer-events-none"} absolute top-0 left-0 p-3 w-full h-full pointer-events-none whitespace-pre-wrap overflow-hidden z-0 font-sans text-base leading-6 m-0`}
                         aria-hidden="true"
                     >
                         <span className="text-transparent">{note.content}</span>
