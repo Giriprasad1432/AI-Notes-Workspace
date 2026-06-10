@@ -141,7 +141,7 @@ const NoteList = ({ selectedNote, onSelectNote, refreshNotes }) => {
     useEffect(() => {
         getNotes();
         if (notelistRef.current) {
-            notelistRef.current.scrollLeft = notelistRef.current.scrollWidth;
+            notelistRef.current.scrollLeft = -notelistRef.current.scrollWidth;
         }
     }, [refreshNotes]);
 
@@ -262,7 +262,6 @@ const NoteList = ({ selectedNote, onSelectNote, refreshNotes }) => {
                 ))}
             </AnimatePresence>
 
-            {/* Floating Library Button */}
             <motion.button
                 whileHover={{ scale: 1.06, y: -2 }}
                 whileTap={{ scale: 0.95 }}
@@ -290,7 +289,6 @@ const NoteList = ({ selectedNote, onSelectNote, refreshNotes }) => {
                             transition={{ type: "spring", damping: 26, stiffness: 220 }}
                             className="fixed top-0 right-0 h-full w-[90%] sm:w-[450px] bg-white/95 dark:bg-[#18181b]/95 backdrop-blur-md border-l border-slate-200 dark:border-zinc-800/80 z-[115] shadow-2xl flex flex-col p-6 overflow-hidden"
                         >
-                            {/* Drawer Header */}
                             <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-zinc-800/80">
                                 <div className="flex items-baseline gap-2">
                                     <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">All Notes</h2>
