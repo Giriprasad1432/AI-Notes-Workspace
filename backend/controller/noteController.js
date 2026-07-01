@@ -5,11 +5,12 @@ import { generateText } from 'ai'
 
 export const addNote = async (req, res) => {
     try {
-        // const { title, content } = req.body;
-        // const user = await RegisterModel.findOne({userId:req.user.id});
-        // const userId=user._id;
-        // console.log("addNote called:", { title, content });
         const { title, content } = req.body;
+
+        if ((title !== undefined && typeof title !== 'string') || (content !== undefined && typeof content !== 'string')) {
+            return res.status(400).json({ success: false, message: "Validation error: title and content must be strings" });
+        }
+
         let userId;
         if (req.user && req.user.id) {
             const user = await RegisterModel.findOne({ userId: req.user.id });
@@ -58,6 +59,11 @@ export const updateNote = async (req, res) => {
     try {
         const noteId = req.params.noteId;
         const { title, content } = req.body;
+
+        if ((title !== undefined && typeof title !== 'string') || (content !== undefined && typeof content !== 'string')) {
+            return res.status(400).json({ success: false, message: "Validation error: title and content must be strings" });
+        }
+
         let newTitle = title;
         if (!title) {
             newTitle = content.substr(0, 10) + "...."

@@ -18,8 +18,10 @@ paths:
               properties:
                 title:
                   type: string
+                  example: "Project Idea"
                 content:
                   type: string
+                  example: "Create an AI Note application."
       responses:
         '200':
           description: Note added successfully
@@ -33,8 +35,10 @@ paths:
                 properties:
                   success:
                     type: boolean
+                    example: true
                   message:
                     type: string
+                    example: "Note added successfully"
         '400':
           description: Validation Error
           content:
@@ -47,5 +51,7 @@ paths:
                 properties:
                   success:
                     type: boolean
+                    example: false
                   message:
                     type: string
+                    example: "Validation Error"

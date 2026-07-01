@@ -1,0 +1,23 @@
+version: 3
+components:
+  sources:
+    localFilesystem:
+      filesystem:
+        directory: .
+  services:
+    notesBackend:
+      description: "MERN AI Note Saver Express API"
+      $ref: "#/components/sources/localFilesystem"
+      specs:
+        - contracts/notes-api.yaml
+      settings:
+        resiliencyTests: all
+  examples:
+    notesExamples:
+      filesystem:
+        directory: contracts/notes-api_examples
+systemUnderTest:
+  service: $ref: "#/components/services/notesBackend"
+  runOptions:
+    test:
+      baseUrl: http://localhost:5000

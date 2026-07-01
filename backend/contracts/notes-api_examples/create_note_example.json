@@ -1,0 +1,17 @@
+{
+    "http-request": {
+        "method": "POST",
+        "path": "/api/add-note",
+        "body": {
+            "title": "Project Idea",
+            "content": "Create an AI Note application."
+        }
+    },
+    "http-response": {
+        "status": 200,
+        "body": {
+            "success": true,
+            "message": "Note added successfully"
+        }
+    }
+}
