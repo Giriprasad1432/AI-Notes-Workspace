@@ -2,6 +2,8 @@ openapi: 3.0.3
 info:
   title: AI Note Saver API
   version: 1.0.0
+security:
+  - bearerAuth: []
 paths:
   /api/add-note:
     post:
@@ -55,3 +57,9 @@ paths:
                   message:
                     type: string
                     example: "Validation Error"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
