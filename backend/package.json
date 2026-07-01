@@ -1,4 +1,3 @@
-
 {
   "name": "ai-notes-backend",
   "version": "1.0.0",
@@ -18,6 +17,7 @@
   },
   "scripts": {
     "dev": "nodemon server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "specmatic-test": "BearerAuth=your_test_jwt_token_here specmatic test --host=localhost --port=5000"
   }
 }
