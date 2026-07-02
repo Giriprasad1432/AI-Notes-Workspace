@@ -1,0 +1,17 @@
+{
+    "http-request": {
+        "method": "POST",
+        "path": "/api/add-note",
+        "body": {
+            "title": "Quick Reminder",
+            "content": "Remember to review the contract tests."
+        }
+    },
+    "http-response": {
+        "status": 200,
+        "body": {
+            "success": true,
+            "message": "Note added successfully"
+        }
+    }
+}

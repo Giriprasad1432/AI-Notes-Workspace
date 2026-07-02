@@ -9,6 +9,9 @@ coverage/
 # Production
 dist/
 build/
+!backend/build/
+!backend/build/reports/
+!backend/build/reports/**
 
 # Misc
 .DS_Store

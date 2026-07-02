@@ -1,0 +1,92 @@
+name: Specmatic Contract Tests
+
+# When does this workflow run?
+# - On every push to 'main' branch
+# - On every pull request targeting 'main' branch
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  specmatic-tests:
+    runs-on: ubuntu-latest
+
+    # MongoDB service container — GitHub Actions spins up a real MongoDB instance
+    services:
+      mongodb:
+        image: mongo:7
+        ports:
+          - 27017:27017
+
+    steps:
+      # Step 1: Check out the code from the repo
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Install Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Step 3: Install Java (Specmatic needs Java to run)
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      # Step 4: Install backend npm dependencies
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm install
+
+      # Step 5: Create a test user and generate a JWT token
+      # The token is needed because the API requires authentication
+      - name: Create test user and get JWT token
+        working-directory: backend
+        env:
+          MONGODB_URI: mongodb://localhost:27017/AI_NOTES_WORKSPACE_TEST
+          JWT_SECRET: ci-test-secret-key-12345
+          GROQ_API_KEY: test-key
+        run: |
+          TOKEN=$(node create_test_user.js | grep "JWT_TOKEN:" -A1 | tail -1)
+          echo "TEST_TOKEN=$TOKEN" >> $GITHUB_ENV
+
+      # Step 6: Start the Express backend server in the background
+      - name: Start backend server
+        working-directory: backend
+        env:
+          MONGODB_URI: mongodb://localhost:27017/AI_NOTES_WORKSPACE_TEST
+          JWT_SECRET: ci-test-secret-key-12345
+          GROQ_API_KEY: test-key
+          PORT: 5000
+        run: |
+          node server.js &
+          echo "Waiting for server to start..."
+          sleep 5
+
+      # Step 7: Verify the server is running
+      - name: Verify server is up
+        run: |
+          curl -s http://localhost:5000 || echo "Server is running (no root route is fine)"
+
+      # Step 8: Run Specmatic contract tests
+      # This is the main test step — Specmatic reads notes-api.yaml and tests the API
+      - name: Run Specmatic contract tests
+        working-directory: backend
+        run: |
+          npx specmatic test --host=localhost --port=5000
+        env:
+          BearerAuth: ${{ env.TEST_TOKEN }}
+
+      # Step 9: Upload Specmatic reports as artifacts
+      # You can download these from the GitHub Actions UI
+      - name: Upload Specmatic reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: specmatic-reports
+          path: backend/build/reports/

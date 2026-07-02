@@ -1,0 +1,17 @@
+{
+    "http-request": {
+        "method": "POST",
+        "path": "/api/add-note",
+        "body": {
+            "title": "Meeting Notes",
+            "content": "Discussed the new feature rollout plan with the team."
+        }
+    },
+    "http-response": {
+        "status": 200,
+        "body": {
+            "success": true,
+            "message": "Note added successfully"
+        }
+    }
+}

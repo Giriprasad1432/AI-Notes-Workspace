@@ -1,0 +1,17 @@
+{
+    "http-request": {
+        "method": "POST",
+        "path": "/api/add-note",
+        "body": {
+            "title": "",
+            "content": ""
+        }
+    },
+    "http-response": {
+        "status": 400,
+        "body": {
+            "success": false,
+            "message": "Title or content is required"
+        }
+    }
+}

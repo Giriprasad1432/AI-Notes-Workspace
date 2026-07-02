@@ -18,7 +18,7 @@
   "scripts": {
     "dev": "nodemon server.js",
     "start": "node server.js",
-    "specmatic-test": "cross-env BearerAuth=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNDU2MjgxYWIxOTVmYzNkMDE4ODI1MSIsImlhdCI6MTc4MjkzMjA5NywiZXhwIjo0OTM4NjkyMDk3fQ.1wyYmyjodDea363z1er42Cf62upmJYtsDa8ihD3Y640 npx specmatic test --host=localhost --port=5000"
+    "specmatic-test": "npx specmatic test --host=localhost --port=5000"
   },
   "devDependencies": {
     "cross-env": "^10.1.0"
