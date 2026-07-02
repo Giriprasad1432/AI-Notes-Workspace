@@ -5,9 +5,9 @@ name: Specmatic Contract Tests
 # - On every pull request targeting 'main' branch
 on:
   push:
-    branches: [ main ]
+    branches: [ specmatic-review-submission  ]
   pull_request:
-    branches: [ main ]
+    branches: [ specmatic-review-submission  ]
 
 jobs:
   specmatic-tests:
@@ -52,7 +52,7 @@ jobs:
           JWT_SECRET: ci-test-secret-key-12345
           GROQ_API_KEY: test-key
         run: |
-          TOKEN=$(node create_test_user.js | grep "JWT_TOKEN:" -A1 | tail -1)
+          TOKEN=$(node createUser.js | grep "JWT_TOKEN:" -A1 | tail -1)
           echo "TEST_TOKEN=$TOKEN" >> $GITHUB_ENV
 
       # Step 6: Start the Express backend server in the background
