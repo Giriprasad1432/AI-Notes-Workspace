@@ -59,7 +59,6 @@ AI-Notes-Workspace/
 │   ├── build/
 │   │   └── reports/               # Specmatic test reports (auto-generated)
 │   ├── .env.example               # Template for environment variables
-│   ├── create_test_user.js        # Script to create a test user + JWT token
 │   ├── package.json               # Backend dependencies & scripts
 │   ├── server.js                  # Express app entry point
 │   └── specmatic.yaml             # Specmatic configuration
@@ -77,16 +76,32 @@ AI-Notes-Workspace/
 
 ## Environment Variables
 
+### Backend
+
 The backend requires a `.env` file in the `backend/` directory. A template is provided in `.env.example`.
 
-### Setup Steps:
+**Setup Steps:**
 
 1. Navigate to the backend directory:
+
+   **Windows (PowerShell):**
+   ```powershell
+   cd backend
+   ```
+
+   **Linux / macOS:**
    ```bash
    cd backend
    ```
 
 2. Copy the example file:
+
+   **Windows (PowerShell):**
+   ```powershell
+   Copy-Item .env.example .env
+   ```
+
+   **Linux / macOS:**
    ```bash
    cp .env.example .env
    ```
@@ -102,62 +117,97 @@ The backend requires a `.env` file in the `backend/` directory. A template is pr
 
 > **Note**: To get a Groq API key, sign up at [console.groq.com](https://console.groq.com/), go to API Keys, and create a new key.
 
+### Frontend
+
+The frontend reads the backend URL from the `VITE_API_URL` environment variable. If the variable is not set, it automatically falls back to `http://localhost:5000` for local development.
+
+To override the URL (e.g. pointing at a staging server), create a `.env` file in `frontend/ai-note-saver/`:
+
+```env
+VITE_API_URL=https://your-backend-domain.example.com
+```
+
+For standard local development, no frontend `.env` file is needed — the fallback applies automatically.
+
 ---
 
 ## Getting Started
 
 ### 1. Clone the Repository
 
+**Windows (PowerShell) / Linux / macOS:**
 ```bash
 git clone https://github.com/<your-username>/AI-Notes-Workspace.git
 cd AI-Notes-Workspace
 ```
 
+---
+
 ### 2. Setup the Backend
 
-```bash
-# Navigate to backend
+**Windows (PowerShell):**
+```powershell
 cd backend
-
-# Install dependencies
 npm install
+Copy-Item .env.example .env
+# Edit .env with your values (see Environment Variables section above)
+npm run dev
+```
 
-# Copy and configure environment variables
+**Linux / macOS:**
+```bash
+cd backend
+npm install
 cp .env.example .env
 # Edit .env with your values (see Environment Variables section above)
-
-# Start the development server
 npm run dev
 ```
 
 The backend server will start on `http://localhost:5000`.
 
+---
+
 ### 3. Setup the Frontend
 
-```bash
-# Navigate to frontend (from project root)
-cd frontend/ai-note-saver
-
-# Install dependencies
+**Windows (PowerShell):**
+```powershell
+cd frontend\ai-note-saver
 npm install
+npm run dev
+```
 
-# Start the development server
+**Linux / macOS:**
+```bash
+cd frontend/ai-note-saver
+npm install
 npm run dev
 ```
 
 The frontend will start on `http://localhost:5173`.
 
+---
+
 ### 4. Database Setup
 
 **Option A — Local MongoDB:**
+
 1. Install MongoDB Community Edition
 2. Start the MongoDB service:
+
+   **Windows (PowerShell):**
+   ```powershell
+   mongod
+   ```
+
+   **Linux / macOS:**
    ```bash
    mongod
    ```
+
 3. Use the default connection string: `mongodb://localhost:27017/AI_NOTES_WORKSPACE`
 
 **Option B — MongoDB Atlas (Cloud):**
+
 1. Create a free account at [MongoDB Atlas](https://www.mongodb.com/atlas)
 2. Create a new cluster (free tier is fine)
 3. Go to **Database Access** → Add a database user
@@ -172,20 +222,26 @@ The frontend will start on `http://localhost:5173`.
 
 ### Authentication
 
-| Method | Endpoint            | Description         | Auth Required |
-|--------|---------------------|---------------------|---------------|
-| POST   | `/api/auth/register` | Register a new user | No            |
-| POST   | `/api/auth/login`    | Login and get JWT   | No            |
-| POST   | `/api/auth/logout`   | Logout (clear cookie) | Yes         |
+| Method | Endpoint             | Description           | Auth Required |
+|--------|----------------------|-----------------------|---------------|
+| POST   | `/api/auth/register` | Register a new user   | No            |
+| POST   | `/api/auth/login`    | Login and get JWT     | No            |
+| POST   | `/api/auth/logout`   | Logout (clear cookie) | Yes           |
 
 ### Notes
 
-| Method | Endpoint                    | Description                   | Auth Required |
-|--------|-----------------------------|-------------------------------|---------------|
-| POST   | `/api/add-note`             | Create a new note             | Yes           |
-| GET    | `/api/get-notes`            | Get all notes for the user    | Yes           |
-| PUT    | `/api/update-note/:noteId`  | Update an existing note       | Yes           |
-| POST   | `/api/suggestion`           | Get AI-powered note suggestion| Yes           |
+| Method | Endpoint                   | Description                    | Auth Required |
+|--------|----------------------------|--------------------------------|---------------|
+| POST   | `/api/add-note`            | Create a new note              | Yes           |
+| GET    | `/api/get-notes`           | Get all notes for the user     | Yes           |
+| PUT    | `/api/update-note/:noteId` | Update an existing note        | Yes           |
+| POST   | `/api/suggestion`          | Get AI-powered note suggestion | Yes           |
+
+### Health Check (Specmatic Actuator)
+
+| Method | Endpoint           | Description                              | Auth Required |
+|--------|--------------------|------------------------------------------|---------------|
+| GET    | `/actuator/health` | Returns `{ "status": "UP" }` when live   | No            |
 
 ---
 
@@ -194,31 +250,43 @@ The frontend will start on `http://localhost:5173`.
 Specmatic validates your API against the OpenAPI contract defined in `contracts/notes-api.yaml`.
 
 ### Prerequisites
-- Java 17+ must be installed (Specmatic runs on the JVM)
-- Backend server must be running
 
-### Steps:
+- Java 17+ must be installed (Specmatic runs on the JVM)
+- Backend server must be running on `http://localhost:5000`
+
+### Steps
 
 1. **Start the backend server** (in one terminal):
+
+   **Windows (PowerShell):**
+   ```powershell
+   cd backend
+   npm run dev
+   ```
+
+   **Linux / macOS:**
    ```bash
    cd backend
    npm run dev
    ```
 
-2. **Create a test user** (first time only):
-   ```bash
-   cd backend
-   node create_test_user.js
-   ```
-   This will seed the database and output a long-lived JWT token to your terminal screen. Copy this token string.
+2. **Run Specmatic tests** (in a second terminal).
 
-3. **Run Specmatic tests** (in another terminal):
-   Make sure your server is running (`npm run dev`), then open a Windows PowerShell window and run the test suite by passing your copied token:
+   You need a valid long-lived Bearer token. The token is passed via the `BearerAuth` environment variable. Specmatic will also use the default fallback token embedded in `specmatic.yaml` if this variable is not set.
+
+   **Windows (PowerShell):**
    ```powershell
-   $env:BearerAuth="PASTE_YOUR_COPIED_TOKEN_HERE"; npm run specmatic-test
+   $env:BearerAuth="YOUR_TOKEN_STRING"; npm run specmatic-test
    ```
 
-4. **View reports**: After tests complete, reports are generated in:
+   **Linux / macOS (Bash):**
+   ```bash
+   BearerAuth="YOUR_TOKEN_STRING" npm run specmatic-test
+   ```
+
+   > **Tip**: Obtain a token by calling `POST /api/auth/login` with valid credentials, then copy the JWT from the response (or from the cookie if using `httpOnly` cookies).
+
+3. **View reports**: After the tests complete, reports are generated in:
 
    ```
    backend/build/reports/specmatic/
@@ -240,17 +308,18 @@ This project uses **GitHub Actions** to automatically run Specmatic contract tes
 
 The workflow file is located at `.github/workflows/specmatic-tests.yml`.
 
-### What the CI Pipeline Does:
+### What the CI Pipeline Does
+
 1. Checks out the code
 2. Sets up Node.js and Java
 3. Installs dependencies
 4. Starts a MongoDB instance (via Docker service container)
-5. Creates a test user and generates a JWT token
-6. Starts the Express backend server
-7. Runs Specmatic contract + resiliency tests
-8. Uploads test reports as CI artifacts
+5. Starts the Express backend server
+6. Runs Specmatic contract + resiliency tests
+7. Uploads test reports as CI artifacts
 
-### Viewing CI Results:
+### Viewing CI Results
+
 - Go to your GitHub repo → **Actions** tab → Click on the latest workflow run
 - Download the `specmatic-reports` artifact to view HTML reports
 

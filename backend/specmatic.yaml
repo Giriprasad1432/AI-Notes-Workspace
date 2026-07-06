@@ -16,6 +16,10 @@ components:
               $ref: "#/components/sources/localFilesystem"
             specs:
               - contracts/notes-api.yaml
+            securitySchemes:
+              bearerAuth:
+                type: bearerAuth
+                token: ${BearerAuth:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNDU2MjgxYWIxOTVmYzNkMDE4ODI1MSIsImlhdCI6MTc4MjkzMjA5NywiZXhwIjo0OTM4NjkyMDk3fQ.1wyYmyjodDea363z1er42Cf62upmJYtsDa8ihD3Y640}
       settings:
         schemaResiliencyTests: all
       data:

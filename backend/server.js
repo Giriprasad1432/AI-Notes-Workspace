@@ -22,7 +22,9 @@ app.use(cors({
 connectDB();
 
 app.use("/api/auth",authRoutes);
-app.use("/api",noteRoutes)
+app.use("/api",noteRoutes);
+
+app.get('/actuator/health', (req, res) => res.status(200).json({ status: "UP" }));
 
 app.listen(PORT,()=>{
     console.log("server started on PORT:",PORT)

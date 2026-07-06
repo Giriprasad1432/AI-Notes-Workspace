@@ -1,2 +1,1 @@
-export const vite_api_url = "https://ai-notes-backend-wnlg.onrender.com";
-// export const vite_api_url = "http://localhost:5000"
+export const vite_api_url = import.meta.env.VITE_API_URL || "http://localhost:5000";

@@ -43,18 +43,6 @@ jobs:
         working-directory: backend
         run: npm install
 
-      # Step 5: Create a test user and generate a JWT token
-      # The token is needed because the API requires authentication
-      - name: Create test user and get JWT token
-        working-directory: backend
-        env:
-          MONGODB_URI: mongodb://localhost:27017/AI_NOTES_WORKSPACE_TEST
-          JWT_SECRET: ci-test-secret-key-12345
-          GROQ_API_KEY: test-key
-        run: |
-          TOKEN=$(node createUser.js | grep "JWT_TOKEN:" -A1 | tail -1)
-          echo "TEST_TOKEN=$TOKEN" >> $GITHUB_ENV
-
       # Step 6: Start the Express backend server in the background
       - name: Start backend server
         working-directory: backend
@@ -79,8 +67,6 @@ jobs:
         working-directory: backend
         run: |
           npx specmatic test --host=localhost --port=5000
-        env:
-          BearerAuth: ${{ env.TEST_TOKEN }}
 
       # Step 9: Upload Specmatic reports as artifacts
       # You can download these from the GitHub Actions UI
