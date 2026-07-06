@@ -208,14 +208,14 @@ Specmatic validates your API against the OpenAPI contract defined in `contracts/
 2. **Create a test user** (first time only):
    ```bash
    cd backend
-   node createUser.js
+   node create_test_user.js
    ```
    This will seed the database and output a long-lived JWT token to your terminal screen. Copy this token string.
 
 3. **Run Specmatic tests** (in another terminal):
    Make sure your server is running (`npm run dev`), then open a Windows PowerShell window and run the test suite by passing your copied token:
    ```powershell
-   \$env:BearerAuth="PASTE_YOUR_COPIED_TOKEN_HERE"; npm run specmatic-test
+   $env:BearerAuth="PASTE_YOUR_COPIED_TOKEN_HERE"; npm run specmatic-test
    ```
 
 4. **View reports**: After tests complete, reports are generated in:
