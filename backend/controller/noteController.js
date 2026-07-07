@@ -30,7 +30,7 @@ export const addNote = async (req, res) => {
             })
             await note.save();
             console.log("Note saved successfully");
-            return res.status(200).json({ success:"true", message: "Note added successfully" })
+            return res.status(200).json({ success: true, message: "Note added successfully" })
         } else {
             return res.status(400).json({ success: false, message: "Title or content is required" })
         }
