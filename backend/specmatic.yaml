@@ -35,14 +35,9 @@ components:
           - spec:
               id: notesApiSpec
 
-# 🌟 ENFORCED STRICT 100% GOVERNANCE SUCCESS CRITERIA AS REQUESTED BY SAACHI
+# 🌟 FIXED: Mapped exact property naming keys matching your native engine parser list
 specmatic:
   governance:
-    report:
-      formats:
-        - ctrf
-        - html
-      outputDirectory: build/reports/specmatic
     successCriteria:
       minCoveragePercentage: 100
       maxMissedOperationsInSpec: 0
