@@ -74,13 +74,13 @@ jobs:
           curl -s http://localhost:5000 || echo "Server is running (no root route is fine)"
 
       # Step 8: Run Specmatic contract tests
-      # 🌟 FIXED: Inline token generation ensures a fresh BearerAuth token is explicitly passed to npm run specmatic-test
+      # 🌟 FIXED: Removed the duplicate node execution. Passed the env token directly into npm script.
       - name: Run Specmatic contract tests
         working-directory: backend
         run: |
-          TOKEN=$(node create_test_user.js | grep "JWT_TOKEN:" -A1 | tail -1)
-          BearerAuth=$TOKEN npm run specmatic-test
-
+          npm run specmatic-test
+        env:
+          BearerAuth: ${{ env.BearerAuth }}
 
       # Step 9: Upload Specmatic reports as artifacts
       # You can download these from the GitHub Actions UI
