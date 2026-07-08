@@ -34,3 +34,16 @@ components:
         specs:
           - spec:
               id: notesApiSpec
+
+# 🌟 ENFORCED STRICT 100% GOVERNANCE SUCCESS CRITERIA AS REQUESTED BY SAACHI
+specmatic:
+  governance:
+    report:
+      formats:
+        - ctrf
+        - html
+      outputDirectory: build/reports/specmatic
+    successCriteria:
+      minCoveragePercentage: 100
+      maxMissedOperationsInSpec: 0
+      enforce: true
