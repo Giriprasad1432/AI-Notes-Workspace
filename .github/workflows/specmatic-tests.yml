@@ -62,7 +62,6 @@ jobs:
           curl -s http://localhost:5000 || echo "Server is running (no root route is fine)"
 
       # Step 8: Run Specmatic contract tests
-      # This is the main test step — Specmatic reads notes-api.yaml and tests the API
       - name: Run Specmatic contract tests
         working-directory: backend
         run: |

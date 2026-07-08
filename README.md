@@ -22,18 +22,18 @@ An AI-powered note-taking application built with the **MERN stack** (MongoDB, Ex
 
 Make sure you have the following installed on your machine:
 
-- **Node.js** (v18 or above) — [Download](https://nodejs.org/)
+- **Node.js** (v18 or above) — [Download](https://nodejs.org)
 - **MongoDB** — Either:
-  - Install locally: [MongoDB Community Edition](https://www.mongodb.com/try/download/community)
-  - Or use a free cloud instance: [MongoDB Atlas](https://www.mongodb.com/atlas)
-- **Git** — [Download](https://git-scm.com/)
-- **Java 17+** (required for Specmatic) — [Download](https://adoptium.net/)
+  - Install locally: [MongoDB Community Edition](https://mongodb.com)
+  - Or use a free cloud instance: [MongoDB Atlas](https://mongodb.com)
+- **Git** — [Download](https://git-scm.com)
+- **Java 17+** (required for Specmatic) — [Download](https://adoptium.net)
 
 ---
 
 ## Project Structure
 
-```
+```text
 AI-Notes-Workspace/
 ├── backend/
 │   ├── config/
@@ -112,23 +112,22 @@ The backend requires a `.env` file in the `backend/` directory. A template is pr
 |----------------|------------------------------------------------|----------------------------------------------------|
 | `MONGODB_URI`  | MongoDB connection string                      | `mongodb://localhost:27017/AI_NOTES_WORKSPACE`     |
 | `JWT_SECRET`   | Secret key used to sign JWT auth tokens        | `my_super_secret_key_123`                          |
-| `GROQ_API_KEY` | API key from [Groq Console](https://console.groq.com/) for AI features | `gsk_xxxxxxxxxxxx`               |
+| `GROQ_API_KEY` | API key from [Groq Console](https://groq.com) for AI features | `gsk_xxxxxxxxxxxx`               |
 | `PORT`         | Port number for the Express server             | `5000`                                             |
 
-> **Note**: To get a Groq API key, sign up at [console.groq.com](https://console.groq.com/), go to API Keys, and create a new key.
+> **Note**: To get a Groq API key, sign up at [://groq.com](https://groq.com), go to API Keys, and create a new key.
 
 ### Frontend
 
-The frontend reads the backend URL from the `VITE_API_URL` environment variable. If the variable is not set, it automatically falls back to `http://localhost:5000` for local development.
+The frontend reads the backend URL from the `VITE_API_URL` environment variable [INDEX]. If the variable is not set, it automatically falls back to `http://localhost:5000` for local development [INDEX].
 
 To override the URL (e.g. pointing at a staging server), create a `.env` file in `frontend/ai-note-saver/`:
 
 ```env
-VITE_API_URL=https://your-backend-domain.example.com
+VITE_API_URL=https://example.com
 ```
 
-For standard local development, no frontend `.env` file is needed — the fallback applies automatically.
-
+For standard local development, no frontend `.env` file is needed — the fallback applies automatically [INDEX].
 ---
 
 ## Getting Started
@@ -137,7 +136,7 @@ For standard local development, no frontend `.env` file is needed — the fallba
 
 **Windows (PowerShell) / Linux / macOS:**
 ```bash
-git clone https://github.com/<your-username>/AI-Notes-Workspace.git
+git clone https://github.com
 cd AI-Notes-Workspace
 ```
 
@@ -208,7 +207,7 @@ The frontend will start on `http://localhost:5173`.
 
 **Option B — MongoDB Atlas (Cloud):**
 
-1. Create a free account at [MongoDB Atlas](https://www.mongodb.com/atlas)
+1. Create a free account at [MongoDB Atlas](https://mongodb.com)
 2. Create a new cluster (free tier is fine)
 3. Go to **Database Access** → Add a database user
 4. Go to **Network Access** → Allow your IP (or `0.0.0.0/0` for development)
@@ -237,22 +236,22 @@ The frontend will start on `http://localhost:5173`.
 | PUT    | `/api/update-note/:noteId` | Update an existing note        | Yes           |
 | POST   | `/api/suggestion`          | Get AI-powered note suggestion | Yes           |
 
-### Health Check (Specmatic Actuator)
+### Health Check & Coverage Tracking (Specmatic Actuator)
 
-| Method | Endpoint           | Description                              | Auth Required |
-|--------|--------------------|------------------------------------------|---------------|
-| GET    | `/actuator/health` | Returns `{ "status": "UP" }` when live   | No            |
-
+| Method | Endpoint             | Description                                          | Auth Required |
+|--------|----------------------|------------------------------------------------------|---------------|
+| GET    | `/actuator/health`   | Returns `{ "status": "UP" }` to verify server readiness | No            |
+| GET    | `/actuator/mappings` | Returns Spring-style route maps for coverage tracking | No            |
 ---
 
-## Running Specmatic Contract Tests
+## Running Specmatic Contract Tests Locally
 
-Specmatic validates your API against the OpenAPI contract defined in `contracts/notes-api.yaml`.
+Specmatic validates your API against the OpenAPI contract defined in `contracts/notes-api.yaml` [INDEX].
 
 ### Prerequisites
 
-- Java 17+ must be installed (Specmatic runs on the JVM)
-- Backend server must be running on `http://localhost:5000`
+- Java 17+ must be installed (Specmatic runs on the JVM).
+- Backend server must be running on `http://localhost:5000`.
 
 ### Steps
 
@@ -270,58 +269,57 @@ Specmatic validates your API against the OpenAPI contract defined in `contracts/
    npm run dev
    ```
 
-2. **Run Specmatic tests** (in a second terminal).
+2. **Run Specmatic tests** (in a second terminal):
 
-   You need a valid long-lived Bearer token. The token is passed via the `BearerAuth` environment variable. Specmatic will also use the default fallback token embedded in `specmatic.yaml` if this variable is not set.
+   Because security tracking is configured natively inside `specmatic.yaml` [INDEX], it automatically maps authentication tokens using an embedded environment fallback model [INDEX]. You can run the test suite instantly with zero manual arguments on any operating system shell [INDEX]:
 
    **Windows (PowerShell):**
    ```powershell
-   $env:BearerAuth="YOUR_TOKEN_STRING"; npm run specmatic-test
+   npm run specmatic-test
    ```
 
    **Linux / macOS (Bash):**
    ```bash
-   BearerAuth="YOUR_TOKEN_STRING" npm run specmatic-test
+   npm run specmatic-test
    ```
 
-   > **Tip**: Obtain a token by calling `POST /api/auth/login` with valid credentials, then copy the JWT from the response (or from the cookie if using `httpOnly` cookies).
+3. **View reports**: After the tests complete, reports are generated in the following directory layout:
 
-3. **View reports**: After the tests complete, reports are generated in:
+```text
+backend/build/reports/specmatic/
+```
 
-   ```
-   backend/build/reports/specmatic/
-   ```
-   - `html/index.html` — Human-readable HTML report
-   - `TEST-All-Tests.xml` — JUnit XML report (used by CI tools)
+- `test/html/index.html` — Interactive, human-readable HTML report dashboard [INDEX]
+- `TEST-All-Tests.xml` — JUnit XML execution matrix log file used by CI tools [INDEX]
 
 ### What Gets Tested?
 
-- **Contract Tests**: Specmatic auto-generates requests based on your OpenAPI spec and checks if your API responds correctly.
-- **Resiliency Tests**: Specmatic sends malformed requests (wrong types, extra fields, missing fields) to test how well your API handles unexpected input.
-- **Example-Based Tests**: The specific examples in `contracts/notes-api_examples/` are also executed as exact test cases.
+- **Contract Tests**: Specmatic auto-generates requests based on your OpenAPI spec and checks if your API responds correctly [INDEX].
+- **Resiliency Tests**: Specmatic sends malformed requests (wrong types, extra fields, missing fields) to test how well your API handles unexpected input [INDEX].
+- **Example-Based Tests**: The specific examples in `contracts/notes-api_examples/` are also executed as exact test cases [INDEX].
 
 ---
 
 ## CI/CD Pipeline
 
-This project uses **GitHub Actions** to automatically run Specmatic contract tests on every push and pull request.
+This project uses **GitHub Actions** to automatically run Specmatic contract tests on every push and pull request targeting your submission branch [INDEX].
 
-The workflow file is located at `.github/workflows/specmatic-tests.yml`.
+The workflow file is located at `.github/workflows/specmatic-tests.yml` [INDEX].
 
 ### What the CI Pipeline Does
 
-1. Checks out the code
-2. Sets up Node.js and Java
-3. Installs dependencies
-4. Starts a MongoDB instance (via Docker service container)
-5. Starts the Express backend server
-6. Runs Specmatic contract + resiliency tests
-7. Uploads test reports as CI artifacts
+1. Checks out the code from your repository [INDEX].
+2. Sets up Node.js and Java execution dependencies [INDEX].
+3. Installs backend production packages [INDEX].
+4. Starts a MongoDB instance via a native Docker service container [INDEX].
+5. Starts the Express backend server in the background [INDEX].
+6. Pulls route maps from the actuator endpoint and executes Specmatic contract + resiliency tests [INDEX].
+7. Uploads test report logs as accessible CI artifacts [INDEX].
 
 ### Viewing CI Results
 
-- Go to your GitHub repo → **Actions** tab → Click on the latest workflow run
-- Download the `specmatic-reports` artifact to view HTML reports
+- Go to your GitHub repo → **Actions** tab → Click on the latest workflow run [INDEX].
+- Download the `specmatic-reports` zip archive folder to view reports locally [INDEX].
 
 ---
 

@@ -2,6 +2,8 @@ version: 3
 systemUnderTest:
   service:
     $ref: "#/components/services/notesBackend"
+    runOptions:
+      $ref: "#/components/runOptions/notesBackend"
 components:
   sources:
     localFilesystem:
@@ -15,10 +17,20 @@ components:
             source:
               $ref: "#/components/sources/localFilesystem"
             specs:
-              - contracts/notes-api.yaml
+              - spec:
+                  id: notesApiSpec
+                  path: contracts/notes-api.yaml
       settings:
         schemaResiliencyTests: all
       data:
         examples:
           - directories:
               - contracts/notes-api_examples
+  runOptions:
+    notesBackend:
+      openapi:
+        type: test
+        actuatorUrl: http://localhost:5000/actuator/mappings
+        specs:
+          - spec:
+              id: notesApiSpec

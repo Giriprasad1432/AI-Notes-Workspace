@@ -26,6 +26,48 @@ app.use("/api",noteRoutes);
 
 app.get('/actuator/health', (req, res) => res.status(200).json({ status: "UP" }));
 
+app.get('/actuator/mappings', (req, res) => {
+    const routes = [
+        { path: "/api/auth/login", methods: ["POST"] },
+        { path: "/api/auth/register", methods: ["POST"] },
+        { path: "/api/auth/logout", methods: ["POST"] },
+        { path: "/api/add-note", methods: ["POST"] },
+        { path: "/api/get-notes", methods: ["GET"] },
+        { path: "/api/update-note/{noteId}", methods: ["PUT"] },
+        { path: "/api/suggestion", methods: ["POST"] },
+        { path: "/actuator/health", methods: ["GET"] },
+        { path: "/actuator/mappings", methods: ["GET"] }
+    ];
+
+    const dispatcherServlet = [];
+    routes.forEach(route => {
+        route.methods.forEach(method => {
+            dispatcherServlet.push({
+                predicate: `{ [${route.path}], methods=[${method}] }`,
+                handler: `ExpressController#${route.path}`,
+                details: {
+                    handlerMethod: {
+                        className: "ExpressController",
+                        name: route.path
+                    }
+                }
+            });
+        });
+    });
+
+    res.json({
+        contexts: {
+            application: {
+                mappings: {
+                    dispatcherServlets: {
+                        dispatcherServlet
+                    }
+                }
+            }
+        }
+    });
+});
+
 app.listen(PORT,()=>{
     console.log("server started on PORT:",PORT)
 })
