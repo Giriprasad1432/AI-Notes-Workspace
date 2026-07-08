@@ -38,6 +38,10 @@ components:
 # 🌟 FIXED: Mapped exact property naming keys matching your native engine parser list
 specmatic:
   governance:
+    report:
+      formats:
+        - html
+      outputDirectory: build/reports/specmatic
     successCriteria:
       minCoveragePercentage: 100
       maxMissedOperationsInSpec: 0
