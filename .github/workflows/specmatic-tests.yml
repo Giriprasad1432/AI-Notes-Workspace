@@ -5,9 +5,9 @@ name: Specmatic Contract Tests
 # - On every pull request targeting 'main' branch
 on:
   push:
-    branches: [ specmatic-review-submission ]
+    branches: [ specmatic-review-submission  ]
   pull_request:
-    branches: [ specmatic-review-submission ]
+    branches: [ specmatic-review-submission  ]
 
 jobs:
   specmatic-tests:
@@ -74,14 +74,13 @@ jobs:
           curl -s http://localhost:5000 || echo "Server is running (no root route is fine)"
 
       # Step 8A: Run Core Contract Tests Only
-      # 🚀 This execution explicitly turns off schema mutation fuzzing to isolate base contract validations.
+      # 🚀 Uses the native filter flag to exclude negative mutation scenarios from this specific execution phase
       - name: Run Core Contract Tests
         working-directory: backend
         run: |
-          npx specmatic test --host=localhost --port=5000 --junitReportDir=build/reports/specmatic/contract
+          npx specmatic test --host=localhost --port=5000 --junitReportDir=build/reports/specmatic/contract --filter="not resiliency"
         env:
           bearerAuth: ${{ env.bearerAuth }}
-          SPECMATIC_SCHEMA_RESILIENCY_TESTS: "false"
 
       # Step 8B: Upload Core Contract Report Artifact Logs Separately
       - name: Upload Contract Test Reports
@@ -92,14 +91,13 @@ jobs:
           path: backend/build/reports/specmatic/contract/
 
       # Step 9A: Run Schema Resiliency Fuzzing Tests Only
-      # 🚀 This execution isolates negative mutations to verify how safely our application catches invalid data types.
+      # 🚀 Uses the native filter flag to isolate and execute only the mutation fuzzing scenarios
       - name: Run Schema Resiliency Fuzzing Tests
         working-directory: backend
         run: |
-          npx specmatic test --host=localhost --port=5000 --junitReportDir=build/reports/specmatic/resiliency
+          npx specmatic test --host=localhost --port=5000 --junitReportDir=build/reports/specmatic/resiliency --filter="resiliency"
         env:
           bearerAuth: ${{ env.bearerAuth }}
-          SPECMATIC_SCHEMA_RESILIENCY_TESTS: "all"
 
       # Step 9B: Upload Resiliency Mutation Report Artifact Logs Separately
       - name: Upload Resiliency Test Reports
