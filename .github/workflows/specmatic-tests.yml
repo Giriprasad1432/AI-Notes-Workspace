@@ -74,13 +74,14 @@ jobs:
           curl -s http://localhost:5000 || echo "Server is running (no root route is fine)"
 
       # Step 8A: Run Core Contract Tests Only
-      # 🚀 Uses the native filter flag to exclude negative mutation scenarios from this specific execution phase
+      # 🚀 Explicitly tells the engine to disable generative fuzzy mutation arrays during this phase
       - name: Run Core Contract Tests
         working-directory: backend
         run: |
-          npx specmatic test --host=localhost --port=5000 --junitReportDir=build/reports/specmatic/contract --filter="not resiliency"
+          npx specmatic test --host=localhost --port=5000 --junitReportDir=build/reports/specmatic/contract
         env:
           bearerAuth: ${{ env.bearerAuth }}
+          SPECMATIC_RESILIENCY_TESTS: "false"
 
       # Step 8B: Upload Core Contract Report Artifact Logs Separately
       - name: Upload Contract Test Reports
@@ -91,13 +92,14 @@ jobs:
           path: backend/build/reports/specmatic/contract/
 
       # Step 9A: Run Schema Resiliency Fuzzing Tests Only
-      # 🚀 Uses the native filter flag to isolate and execute only the mutation fuzzing scenarios
+      # 🚀 Explicitly forces the engine to target only generative type and constraint test profiles
       - name: Run Schema Resiliency Fuzzing Tests
         working-directory: backend
         run: |
-          npx specmatic test --host=localhost --port=5000 --junitReportDir=build/reports/specmatic/resiliency --filter="resiliency"
+          npx specmatic test --host=localhost --port=5000 --junitReportDir=build/reports/specmatic/resiliency
         env:
           bearerAuth: ${{ env.bearerAuth }}
+          SPECMATIC_RESILIENCY_TESTS: "true"
 
       # Step 9B: Upload Resiliency Mutation Report Artifact Logs Separately
       - name: Upload Resiliency Test Reports
