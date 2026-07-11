@@ -35,7 +35,7 @@ components:
           - spec:
               id: notesApiSpec
 
-# 🌟 FIXED: Mapped exact property naming keys matching your native engine parser list
+# Enforced strict 100% governance success metrics matching your build rules
 specmatic:
   governance:
     report:

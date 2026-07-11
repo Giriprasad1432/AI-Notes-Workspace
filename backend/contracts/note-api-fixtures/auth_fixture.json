@@ -1,0 +1,47 @@
+{
+  "before": [
+    {
+      "type": "http",
+      "http-request": {
+        "baseUrl": "http://localhost:5000",
+        "path": "/api/auth/login",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "email": "testuser@example.com",
+          "password": "password123"
+        }
+      },
+      "http-response": {
+        "status": 200,
+        "body": {
+          "token": "(BearerAuth:string)"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    }
+  ],
+  "partial": {
+    "http-request": {
+      "path": "/api/add-note",
+      "method": "POST",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "title": "Fixture Note",
+        "content": "Testing fixture tokens"
+      }
+    },
+    "http-response": {
+      "status": 200,
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  }
+}
