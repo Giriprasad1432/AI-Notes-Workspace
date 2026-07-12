@@ -17,7 +17,7 @@
       "http-response": {
         "status": 200,
         "body": {
-          "token": "(BearerAuth:string)"
+          "token": "(bearerAuth:string)"
         },
         "headers": {
           "Content-Type": "application/json"

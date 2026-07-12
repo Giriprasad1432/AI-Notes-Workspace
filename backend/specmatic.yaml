@@ -20,8 +20,9 @@ components:
               - spec:
                   id: notesApiSpec
                   path: contracts/notes-api.yaml
+      # 🌟 FIXED: Kept dynamic environment hook variable for clean contract vs resiliency checks
       settings:
-        schemaResiliencyTests: all
+        schemaResiliencyTests: ${SPECMATIC_SCHEMA_RESILIENCY_TESTS:all}
       data:
         examples:
           - directories:
@@ -35,7 +36,7 @@ components:
           - spec:
               id: notesApiSpec
 
-# Enforced strict 100% governance success metrics matching your build rules
+# Enforced strict 100% governance success parameters
 specmatic:
   governance:
     report:

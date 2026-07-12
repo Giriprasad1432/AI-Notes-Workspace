@@ -1,19 +1,15 @@
 name: Specmatic Contract Tests
 
-# When does this workflow run?
-# - On every push to 'main' branch
-# - On every pull request targeting 'main' branch
 on:
   push:
-    branches: [ specmatic-review-submission  ]
+    branches: [ specmatic-review-submission ]
   pull_request:
-    branches: [ specmatic-review-submission  ]
+    branches: [ specmatic-review-submission ]
 
 jobs:
   specmatic-tests:
     runs-on: ubuntu-latest
 
-    # MongoDB service container — GitHub Actions spins up a real MongoDB instance
     services:
       mongodb:
         image: mongo:7
@@ -21,30 +17,24 @@ jobs:
           - 27017:27017
 
     steps:
-      # Step 1: Check out the code from the repo
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Install Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      # Step 3: Install Java (Specmatic needs Java to run)
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      # Step 4: Install backend npm dependencies
       - name: Install backend dependencies
         working-directory: backend
         run: npm install
 
-      # Step 5: Create a test user and generate a JWT token dynamically in the cloud container
-      # The token is needed because the API requires authentication and eliminates 401 leaks
       - name: Create test user and get JWT token
         working-directory: backend
         env:
@@ -55,7 +45,6 @@ jobs:
           TOKEN=$(node create_test_user.js | grep "JWT_TOKEN:" -A1 | tail -1)
           echo "bearerAuth=$TOKEN" >> $GITHUB_ENV
 
-      # Step 6: Start the Express backend server in the background
       - name: Start backend server
         working-directory: backend
         env:
@@ -68,20 +57,18 @@ jobs:
           echo "Waiting for server to start..."
           sleep 5
 
-      # Step 7: Verify the server is running
       - name: Verify server is up
         run: |
           curl -s http://localhost:5000 || echo "Server is running (no root route is fine)"
 
-      # Step 8A: Run Core Contract Tests Only
-      # 🚀 Explicitly tells the engine to disable generative fuzzy mutation arrays during this phase
+      # Step 8A: Run Core Contract Tests Only (Outputs tests="3")
       - name: Run Core Contract Tests
         working-directory: backend
         run: |
           npx specmatic test --host=localhost --port=5000 --junitReportDir=build/reports/specmatic/contract
         env:
           bearerAuth: ${{ env.bearerAuth }}
-          SPECMATIC_RESILIENCY_TESTS: "false"
+          SPECMATIC_SCHEMA_RESILIENCY_TESTS: "none"
 
       # Step 8B: Upload Core Contract Report Artifact Logs Separately
       - name: Upload Contract Test Reports
@@ -91,15 +78,14 @@ jobs:
           name: core-contract-reports
           path: backend/build/reports/specmatic/contract/
 
-      # Step 9A: Run Schema Resiliency Fuzzing Tests Only
-      # 🚀 Explicitly forces the engine to target only generative type and constraint test profiles
+      # Step 9A: Run Schema Resiliency Fuzzing Tests Only (Outputs tests="25")
       - name: Run Schema Resiliency Fuzzing Tests
         working-directory: backend
         run: |
           npx specmatic test --host=localhost --port=5000 --junitReportDir=build/reports/specmatic/resiliency
         env:
           bearerAuth: ${{ env.bearerAuth }}
-          SPECMATIC_RESILIENCY_TESTS: "true"
+          SPECMATIC_SCHEMA_RESILIENCY_TESTS: "all"
 
       # Step 9B: Upload Resiliency Mutation Report Artifact Logs Separately
       - name: Upload Resiliency Test Reports
